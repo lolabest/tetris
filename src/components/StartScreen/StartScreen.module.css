@@ -12,9 +12,49 @@
   overflow: hidden;
   border-radius: 12px 12px 0 0;
   background:
-    linear-gradient(180deg, rgba(12, 11, 10, 0.2), rgba(12, 11, 10, 0.85)),
-    linear-gradient(120deg, #1c1914, #0f0e0c 60%, #1a1610);
-  box-shadow: inset 0 -1px 0 rgba(201, 162, 39, 0.25);
+    radial-gradient(
+      ellipse 80% 60% at 50% 20%,
+      rgba(210, 140, 50, 0.18),
+      transparent 55%
+    ),
+    linear-gradient(180deg, rgba(20, 12, 8, 0.15), rgba(8, 6, 5, 0.92)),
+    linear-gradient(120deg, #2a1c12, #100c09 55%, #1a120e);
+  box-shadow: inset 0 -1px 0 rgba(212, 168, 75, 0.3);
+}
+
+.haze {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 40% 50% at 20% 70%,
+      rgba(190, 180, 160, 0.12),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 35% 45% at 80% 65%,
+      rgba(170, 160, 140, 0.1),
+      transparent 55%
+    );
+  animation: drift calc(12s * var(--pb-motion, 1)) ease-in-out infinite
+    alternate;
+  pointer-events: none;
+}
+
+.spotlight {
+  position: absolute;
+  left: 50%;
+  top: -20%;
+  width: 70%;
+  height: 80%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 200, 100, 0.12),
+    transparent 65%
+  );
+  pointer-events: none;
+  animation: lamp calc(5.5s * var(--pb-motion, 1)) ease-in-out infinite;
 }
 
 .keys {
@@ -26,6 +66,7 @@
   justify-content: center;
   gap: 0.35%;
   padding: 0 4%;
+  z-index: 1;
 }
 
 .key {
@@ -181,11 +222,34 @@
   }
 }
 
+@keyframes drift {
+  from {
+    transform: translateX(-2%) translateY(1%);
+    opacity: 0.7;
+  }
+  to {
+    transform: translateX(3%) translateY(-2%);
+    opacity: 1;
+  }
+}
+
+@keyframes lamp {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .white,
   .black,
   .screen,
-  .cta {
+  .cta,
+  .haze,
+  .spotlight {
     animation: none;
   }
 }

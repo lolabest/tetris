@@ -26,9 +26,9 @@ If Web Audio is missing or fails, all play methods no-op — gameplay continues.
 
 ## Background music
 
-An original ambient recital loop (`musicDefinitions.ts`) plays during active gameplay:
+An original late-night jazz piano loop (`musicDefinitions.ts`) plays during active gameplay:
 
-- Soft waltz-feel piano melody + broken-chord accompaniment (C major)
+- Swing-feel melody with blue notes + stride/walking accompaniment (C blues / dominant cycle)
 - Generated entirely with oscillators — no sampled or copyrighted audio
 - Starts when a session begins; pauses with the game; stops on game over / menu
 - Routed through a separate music bus (quieter than SFX) under the master gain

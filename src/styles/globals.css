@@ -16,22 +16,16 @@ body,
 body {
   font-family: var(--pb-font-body);
   color: var(--pb-ivory);
-  background:
-    radial-gradient(
-      ellipse 120% 80% at 50% -20%,
-      rgba(201, 162, 39, 0.12),
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse 80% 50% at 100% 100%,
-      rgba(243, 234, 216, 0.04),
-      transparent 50%
-    ),
-    linear-gradient(165deg, #161410 0%, var(--pb-bg-deep) 45%, #100e0c 100%);
-  background-attachment: fixed;
+  background: var(--pb-bg-deep);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
 }
 
 button,
@@ -47,7 +41,7 @@ input:focus-visible,
 }
 
 ::selection {
-  background: rgba(201, 162, 39, 0.35);
+  background: rgba(212, 168, 75, 0.35);
   color: var(--pb-ivory);
 }
 

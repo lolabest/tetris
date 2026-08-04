@@ -13,6 +13,7 @@ import { GameHeader } from "../components/GameHeader/GameHeader";
 import { GameOverModal } from "../components/GameOverModal/GameOverModal";
 import { GameStats } from "../components/GameStats/GameStats";
 import { HoldPiece } from "../components/HoldPiece/HoldPiece";
+import { JazzAtmosphere } from "../components/JazzAtmosphere/JazzAtmosphere";
 import { NextPiece } from "../components/NextPiece/NextPiece";
 import { PauseOverlay } from "../components/PauseOverlay/PauseOverlay";
 import { StartScreen } from "../components/StartScreen/StartScreen";
@@ -358,95 +359,98 @@ export function App() {
 
   return (
     <div className={styles.app}>
-      <GameHeader
-        muted={muted}
-        volume={volume}
-        onToggleMute={() => {
-          void ensureAudio();
-          setMuted((m) => !m);
-        }}
-        onVolumeChange={(v) => {
-          void ensureAudio();
-          setVolume(v);
-          if (v > 0 && muted) {
-            setMuted(false);
-          }
-        }}
-        showPause={screen === "playing" && ui.phase === "playing"}
-        onPause={() => onAction("pause")}
-      />
-
-      {screen === "start" ? (
-        <StartScreen
-          highScore={ui.highScore}
-          onStart={() => void startGame()}
+      <JazzAtmosphere />
+      <div className={styles.foreground}>
+        <GameHeader
+          muted={muted}
+          volume={volume}
+          onToggleMute={() => {
+            void ensureAudio();
+            setMuted((m) => !m);
+          }}
+          onVolumeChange={(v) => {
+            void ensureAudio();
+            setVolume(v);
+            if (v > 0 && muted) {
+              setMuted(false);
+            }
+          }}
+          showPause={screen === "playing" && ui.phase === "playing"}
+          onPause={() => onAction("pause")}
         />
-      ) : (
-        <main
-          className={`${styles.game} ${levelFlash ? styles.levelFlash : ""}`}
-        >
-          <div className={styles.holdSlot}>
-            <HoldPiece hold={ui.hold} canHold={ui.canHold} />
-          </div>
 
-          <div className={styles.statsSlot}>
-            <GameStats
-              score={ui.score}
-              level={ui.level}
-              lines={ui.lines}
-              highScore={Math.max(ui.highScore, ui.score)}
-            />
-            <div
-              className={styles.guide}
-              aria-label="Keyboard controls summary"
-            >
-              <p>
-                <kbd>←→</kbd> move · <kbd>↑/X</kbd> rotate · <kbd>Z</kbd> CCW
-              </p>
-              <p>
-                <kbd>Space</kbd> drop · <kbd>C</kbd> hold · <kbd>P</kbd> pause
-              </p>
+        {screen === "start" ? (
+          <StartScreen
+            highScore={ui.highScore}
+            onStart={() => void startGame()}
+          />
+        ) : (
+          <main
+            className={`${styles.game} ${levelFlash ? styles.levelFlash : ""}`}
+          >
+            <div className={styles.holdSlot}>
+              <HoldPiece hold={ui.hold} canHold={ui.canHold} />
             </div>
-          </div>
 
-          <div className={styles.stage}>
-            <GameCanvas ref={canvasRef} />
-            {ui.phase === "paused" ? (
-              <PauseOverlay
-                onResume={() => onAction("pause")}
-                onRestart={() => {
-                  if (window.confirm("Restart the current recital?")) {
-                    void startGame();
-                  }
-                }}
-              />
-            ) : null}
-            {ui.phase === "gameover" ? (
-              <GameOverModal
+            <div className={styles.statsSlot}>
+              <GameStats
                 score={ui.score}
-                highScore={Math.max(ui.highScore, ui.score)}
-                lines={ui.lines}
                 level={ui.level}
-                onRestart={() => void startGame()}
-                onMenu={returnToMenu}
+                lines={ui.lines}
+                highScore={Math.max(ui.highScore, ui.score)}
               />
-            ) : null}
-          </div>
+              <div
+                className={styles.guide}
+                aria-label="Keyboard controls summary"
+              >
+                <p>
+                  <kbd>←→</kbd> move · <kbd>↑/X</kbd> rotate · <kbd>Z</kbd> CCW
+                </p>
+                <p>
+                  <kbd>Space</kbd> drop · <kbd>C</kbd> hold · <kbd>P</kbd> pause
+                </p>
+              </div>
+            </div>
 
-          <div className={styles.nextSlot}>
-            <NextPiece queue={ui.nextQueue} />
-          </div>
+            <div className={styles.stage}>
+              <GameCanvas ref={canvasRef} />
+              {ui.phase === "paused" ? (
+                <PauseOverlay
+                  onResume={() => onAction("pause")}
+                  onRestart={() => {
+                    if (window.confirm("Restart the current recital?")) {
+                      void startGame();
+                    }
+                  }}
+                />
+              ) : null}
+              {ui.phase === "gameover" ? (
+                <GameOverModal
+                  score={ui.score}
+                  highScore={Math.max(ui.highScore, ui.score)}
+                  lines={ui.lines}
+                  level={ui.level}
+                  onRestart={() => void startGame()}
+                  onMenu={returnToMenu}
+                />
+              ) : null}
+            </div>
 
-          <div className={styles.touch}>
-            <TouchControls
-              onPress={touch.press}
-              onSoftDropStart={touch.startSoftDrop}
-              onSoftDropEnd={touch.releaseSoftDrop}
-              disabled={ui.phase === "paused" || ui.phase === "gameover"}
-            />
-          </div>
-        </main>
-      )}
+            <div className={styles.nextSlot}>
+              <NextPiece queue={ui.nextQueue} />
+            </div>
+
+            <div className={styles.touch}>
+              <TouchControls
+                onPress={touch.press}
+                onSoftDropStart={touch.startSoftDrop}
+                onSoftDropEnd={touch.releaseSoftDrop}
+                disabled={ui.phase === "paused" || ui.phase === "gameover"}
+              />
+            </div>
+          </main>
+        )}
+      </div>
     </div>
   );
 }

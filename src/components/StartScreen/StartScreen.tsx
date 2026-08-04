@@ -9,6 +9,7 @@ export function StartScreen({ highScore, onStart }: StartScreenProps) {
   return (
     <section className={styles.screen} aria-labelledby="start-title">
       <div className={styles.hero} aria-hidden="true">
+        <div className={styles.haze} />
         <div className={styles.keys}>
           {Array.from({ length: 14 }, (_, i) => (
             <span
@@ -18,14 +19,16 @@ export function StartScreen({ highScore, onStart }: StartScreenProps) {
             />
           ))}
         </div>
+        <div className={styles.spotlight} />
       </div>
       <div className={styles.content}>
-        <p className={styles.eyebrow}>An elegant falling-block suite</p>
+        <p className={styles.eyebrow}>Old jazz · late ivory</p>
         <h1 id="start-title" className={styles.title}>
           Piano Blocks
         </h1>
         <p className={styles.tagline}>
-          Clear rows like pressing ivory keys. Every piece sings its own note.
+          A smoky lounge recital. Clear rows like pressing keys under amber
+          light.
         </p>
         <button
           type="button"
