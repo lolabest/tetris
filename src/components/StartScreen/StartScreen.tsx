@@ -8,19 +8,6 @@ interface StartScreenProps {
 export function StartScreen({ highScore, onStart }: StartScreenProps) {
   return (
     <section className={styles.screen} aria-labelledby="start-title">
-      <div className={styles.hero} aria-hidden="true">
-        <div className={styles.haze} />
-        <div className={styles.keys}>
-          {Array.from({ length: 14 }, (_, i) => (
-            <span
-              key={i}
-              className={`${styles.key} ${i % 2 === 1 ? styles.black : styles.white}`}
-              style={{ animationDelay: `${i * 0.06}s` }}
-            />
-          ))}
-        </div>
-        <div className={styles.spotlight} />
-      </div>
       <div className={styles.content}>
         <p className={styles.eyebrow}>Old jazz · late ivory</p>
         <h1 id="start-title" className={styles.title}>

@@ -15,7 +15,8 @@ interface SmokePuff {
 }
 
 /**
- * Full-bleed jazz-lounge backdrop with warm lamps and rising cigar smoke.
+ * Jazz bar backdrop: piano boy scene + thick drifting bar smoke.
+ * No ashtray / cup props — smoke only.
  */
 export function JazzAtmosphere() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -42,23 +43,23 @@ export function JazzAtmosphere() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
-    const spawn = (side: "left" | "right"): void => {
+    /** Spawn wide horizontal smoke bands like haze in a bar spotlight. */
+    const spawn = (): void => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      const source =
-        side === "left"
-          ? { x: w * 0.1 + Math.random() * 50, y: h * 0.82 }
-          : { x: w * 0.82 + Math.random() * 50, y: h * 0.8 };
+      const band = Math.random();
+      // Concentrated in mid/upper air where stage light cuts through
+      const y = h * (0.2 + band * 0.55);
       puffs.push({
-        x: source.x,
-        y: source.y,
-        r: 14 + Math.random() * 28,
-        vx: (Math.random() - 0.45) * 0.35,
-        vy: -0.35 - Math.random() * 0.55,
+        x: -80 + Math.random() * (w + 160),
+        y,
+        r: 40 + Math.random() * 90,
+        vx: 0.04 + Math.random() * 0.12,
+        vy: -0.02 - Math.random() * 0.06,
         life: 0,
-        maxLife: 5000 + Math.random() * 4500,
+        maxLife: 7000 + Math.random() * 6000,
         wobble: Math.random() * Math.PI * 2,
-        wobbleSpeed: 0.01 + Math.random() * 0.014,
+        wobbleSpeed: 0.004 + Math.random() * 0.008,
       });
     };
 
@@ -66,29 +67,20 @@ export function JazzAtmosphere() {
       const w = window.innerWidth;
       const h = window.innerHeight;
       ctx.clearRect(0, 0, w, h);
-      for (const [x, y] of [
-        [w * 0.12, h * 0.7],
-        [w * 0.88, h * 0.68],
-      ] as const) {
-        const haze = ctx.createRadialGradient(
-          x,
-          y,
-          8,
-          x,
-          y - h * 0.15,
-          w * 0.28,
-        );
-        haze.addColorStop(0, "rgba(210, 195, 170, 0.22)");
-        haze.addColorStop(0.5, "rgba(150, 135, 115, 0.1)");
-        haze.addColorStop(1, "rgba(150, 135, 115, 0)");
-        ctx.fillStyle = haze;
+      for (let i = 0; i < 8; i += 1) {
+        const x = w * (0.1 + i * 0.12);
+        const y = h * (0.25 + (i % 3) * 0.15);
+        const g = ctx.createRadialGradient(x, y, 10, x, y, w * 0.22);
+        g.addColorStop(0, "rgba(220, 205, 180, 0.18)");
+        g.addColorStop(0.5, "rgba(160, 145, 120, 0.08)");
+        g.addColorStop(1, "rgba(160, 145, 120, 0)");
+        ctx.fillStyle = g;
         ctx.fillRect(0, 0, w, h);
       }
     };
 
     let lastSpawn = 0;
     let last = performance.now();
-    let sideToggle = false;
 
     const tick = (now: number): void => {
       if (!running) return;
@@ -98,9 +90,8 @@ export function JazzAtmosphere() {
       const h = window.innerHeight;
       ctx.clearRect(0, 0, w, h);
 
-      if (now - lastSpawn > 180 && puffs.length < 64) {
-        spawn(sideToggle ? "left" : "right");
-        sideToggle = !sideToggle;
+      if (now - lastSpawn > 140 && puffs.length < 70) {
+        spawn();
         lastSpawn = now;
       }
 
@@ -108,30 +99,31 @@ export function JazzAtmosphere() {
         const p = puffs[i]!;
         p.life += dt;
         p.wobble += p.wobbleSpeed * dt;
-        p.x += p.vx * dt + Math.sin(p.wobble) * 0.12 * dt;
-        p.y += p.vy * dt;
-        p.r += 0.018 * dt;
-        p.vy *= 0.9992;
+        p.x += p.vx * dt + Math.sin(p.wobble) * 0.05 * dt;
+        p.y += p.vy * dt + Math.cos(p.wobble * 0.7) * 0.03 * dt;
+        p.r += 0.02 * dt;
 
         const t = p.life / p.maxLife;
-        if (t >= 1 || p.y < -100) {
+        if (t >= 1 || p.x > w + 120) {
           puffs.splice(i, 1);
           continue;
         }
 
-        const alpha = t < 0.12 ? t / 0.12 : t > 0.5 ? 1 - (t - 0.5) / 0.5 : 1;
+        const alpha =
+          t < 0.15 ? t / 0.15 : t > 0.55 ? 1 - (t - 0.55) / 0.45 : 1;
         const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-        gradient.addColorStop(0, `rgba(225, 210, 185, ${0.28 * alpha})`);
-        gradient.addColorStop(0.4, `rgba(160, 145, 125, ${0.16 * alpha})`);
-        gradient.addColorStop(1, `rgba(70, 55, 40, 0)`);
+        gradient.addColorStop(0, `rgba(230, 215, 190, ${0.22 * alpha})`);
+        gradient.addColorStop(0.35, `rgba(170, 155, 130, ${0.14 * alpha})`);
+        gradient.addColorStop(1, `rgba(60, 45, 30, 0)`);
         ctx.fillStyle = gradient;
         ctx.beginPath();
+        // Wide horizontal ellipses — bar smoke drifting through light
         ctx.ellipse(
           p.x,
           p.y,
-          p.r * 1.15,
-          p.r * 0.85,
-          p.wobble * 0.2,
+          p.r * 1.6,
+          p.r * 0.55,
+          Math.sin(p.wobble) * 0.25,
           0,
           Math.PI * 2,
         );
@@ -152,13 +144,12 @@ export function JazzAtmosphere() {
       };
     }
 
-    for (let i = 0; i < 16; i += 1) {
-      spawn(i % 2 === 0 ? "left" : "right");
+    for (let i = 0; i < 24; i += 1) {
+      spawn();
       const p = puffs[puffs.length - 1];
       if (p) {
-        p.life = Math.random() * p.maxLife * 0.55;
-        p.y -= Math.random() * 180;
-        p.r += Math.random() * 20;
+        p.life = Math.random() * p.maxLife * 0.6;
+        p.x = Math.random() * window.innerWidth;
       }
     }
 
@@ -176,21 +167,10 @@ export function JazzAtmosphere() {
       data-testid="jazz-atmosphere"
       aria-hidden="true"
     >
-      <div className={styles.wood} />
-      <div className={styles.curtain} />
-      <div className={styles.lampLeft} />
-      <div className={styles.lampRight} />
-      <div className={styles.stageGlow} />
-      <div className={styles.floor} />
+      <div className={styles.scene} role="presentation" />
+      <div className={styles.sceneShade} />
+      <div className={styles.beam} />
       <canvas ref={canvasRef} className={styles.smoke} />
-      <div className={styles.ashtray} data-side="left">
-        <span className={styles.cigar} />
-        <span className={styles.ember} />
-      </div>
-      <div className={styles.ashtray} data-side="right">
-        <span className={styles.cigar} />
-        <span className={styles.ember} />
-      </div>
       <div className={styles.vignette} />
       <div className={styles.grain} />
     </div>

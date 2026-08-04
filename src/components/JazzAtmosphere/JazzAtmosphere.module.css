@@ -4,109 +4,53 @@
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  background:
-    radial-gradient(
-      ellipse 90% 70% at 12% 95%,
-      rgba(160, 90, 30, 0.45),
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse 80% 65% at 92% 90%,
-      rgba(130, 70, 25, 0.38),
-      transparent 52%
-    ),
-    radial-gradient(
-      ellipse 100% 70% at 50% -5%,
-      rgba(220, 160, 60, 0.22),
-      transparent 48%
-    ),
-    linear-gradient(170deg, #2a1a10 0%, #140e0a 40%, #070504 100%);
+  background: #0a0705;
 }
 
-.wood {
+.scene {
   position: absolute;
   inset: 0;
-  opacity: 0.5;
+  background-image: url("/jazz-bar-piano-boy.png");
+  background-size: cover;
+  background-position: center 35%;
+  background-repeat: no-repeat;
+  transform: scale(1.04);
+  filter: saturate(1.05) contrast(1.05);
+}
+
+.sceneShade {
+  position: absolute;
+  inset: 0;
   background:
-    repeating-linear-gradient(
-      93deg,
-      transparent 0 10px,
-      rgba(80, 50, 25, 0.18) 10px 11px
+    linear-gradient(
+      180deg,
+      rgba(8, 5, 3, 0.35) 0%,
+      rgba(8, 5, 3, 0.15) 35%,
+      rgba(8, 5, 3, 0.45) 70%,
+      rgba(5, 3, 2, 0.78) 100%
     ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 34px,
-      rgba(50, 32, 18, 0.12) 34px 35px
+    radial-gradient(
+      ellipse at 50% 40%,
+      transparent 20%,
+      rgba(0, 0, 0, 0.45) 100%
     );
 }
 
-.curtain {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 28%;
-  background: repeating-linear-gradient(
-    90deg,
-    rgba(60, 18, 18, 0.55) 0 18px,
-    rgba(40, 12, 12, 0.65) 18px 36px
-  );
-  mask-image: linear-gradient(180deg, #000 40%, transparent 100%);
-  opacity: 0.55;
-}
-
-.lampLeft,
-.lampRight {
-  position: absolute;
-  width: min(55vw, 520px);
-  height: min(60vh, 560px);
-  border-radius: 50%;
-  filter: blur(28px);
-  opacity: 0.85;
-  animation: lampPulse calc(6s * var(--pb-motion, 1)) ease-in-out infinite;
-}
-
-.lampLeft {
-  left: -10%;
-  bottom: 0;
-  background: radial-gradient(circle, rgba(255, 170, 60, 0.7), transparent 68%);
-}
-
-.lampRight {
-  right: -8%;
-  bottom: 2%;
-  background: radial-gradient(
-    circle,
-    rgba(230, 140, 50, 0.55),
-    transparent 68%
-  );
-  animation-delay: 1.4s;
-}
-
-.stageGlow {
+.beam {
   position: absolute;
   left: 50%;
-  top: 0;
-  width: min(80vw, 720px);
-  height: 50vh;
+  top: -10%;
+  width: min(70vw, 640px);
+  height: 70vh;
   transform: translateX(-50%);
   background: radial-gradient(
     ellipse at center top,
-    rgba(255, 200, 90, 0.28),
-    transparent 65%
+    rgba(255, 190, 90, 0.2),
+    rgba(255, 160, 60, 0.06) 45%,
+    transparent 70%
   );
-}
-
-.floor {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 28%;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    rgba(40, 24, 12, 0.55) 40%,
-    rgba(20, 12, 8, 0.75)
-  );
+  animation: beamPulse calc(5s * var(--pb-motion, 1)) ease-in-out infinite;
+  mix-blend-mode: screen;
 }
 
 .smoke {
@@ -114,69 +58,8 @@
   inset: 0;
   width: 100%;
   height: 100%;
-}
-
-.ashtray {
-  position: absolute;
-  bottom: 7%;
-  width: 72px;
-  height: 18px;
-  border-radius: 40% 40% 25% 25%;
-  background: linear-gradient(180deg, #5a4a38, #1c1610);
-  box-shadow:
-    0 4px 14px rgba(0, 0, 0, 0.65),
-    inset 0 1px 0 rgba(212, 168, 75, 0.35);
+  mix-blend-mode: screen;
   opacity: 0.95;
-}
-
-.ashtray[data-side="left"] {
-  left: 6%;
-}
-
-.ashtray[data-side="right"] {
-  right: 8%;
-}
-
-.cigar {
-  position: absolute;
-  left: 22%;
-  bottom: 14px;
-  width: 4px;
-  height: 36px;
-  border-radius: 2px;
-  background: linear-gradient(180deg, #d4b08a 0%, #7a5234 50%, #2a1a10 100%);
-  transform: rotate(-20deg);
-  transform-origin: bottom center;
-  box-shadow: 0 0 10px rgba(255, 120, 40, 0.35);
-}
-
-.ashtray[data-side="right"] .cigar {
-  left: auto;
-  right: 24%;
-  transform: rotate(18deg);
-}
-
-.ember {
-  position: absolute;
-  left: calc(22% - 2px);
-  bottom: 46px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    #ffe0a0 0%,
-    #ff8a30 45%,
-    #c04010 70%,
-    transparent 75%
-  );
-  box-shadow: 0 0 12px 4px rgba(255, 120, 40, 0.55);
-  animation: ember calc(1.8s * var(--pb-motion, 1)) ease-in-out infinite;
-}
-
-.ashtray[data-side="right"] .ember {
-  left: auto;
-  right: calc(24% - 2px);
 }
 
 .vignette {
@@ -184,65 +67,37 @@
   inset: 0;
   background: radial-gradient(
     ellipse at center,
-    transparent 30%,
-    rgba(0, 0, 0, 0.62) 100%
+    transparent 25%,
+    rgba(0, 0, 0, 0.7) 100%
   );
 }
 
 .grain {
   position: absolute;
   inset: 0;
-  opacity: 0.1;
+  opacity: 0.12;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   mix-blend-mode: overlay;
 }
 
-@keyframes lampPulse {
+@keyframes beamPulse {
   0%,
   100% {
     opacity: 0.65;
-    transform: scale(1);
   }
   50% {
     opacity: 1;
-    transform: scale(1.06);
-  }
-}
-
-@keyframes ember {
-  0%,
-  100% {
-    opacity: 0.65;
-    transform: scale(0.85);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.25);
   }
 }
 
 @media (max-width: 720px) {
-  .ashtray {
-    transform: scale(0.9);
-  }
-
-  .ashtray[data-side="left"] {
-    left: 2%;
-  }
-
-  .ashtray[data-side="right"] {
-    right: 3%;
-  }
-
-  .curtain {
-    opacity: 0.4;
+  .scene {
+    background-position: center 30%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lampLeft,
-  .lampRight,
-  .ember {
+  .beam {
     animation: none;
   }
 }
