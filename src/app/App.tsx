@@ -412,7 +412,6 @@ export function App() {
           <StartScreen
             highScore={ui.highScore}
             onStart={() => void startGame()}
-            {...soundHandlers}
           />
         ) : (
           <main
