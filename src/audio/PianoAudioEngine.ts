@@ -382,8 +382,24 @@ export class PianoAudioEngine {
         this.useFileMusic = false;
         return false;
       }
+      const headerType = response.headers.get("content-type") ?? "";
+      // Vite SPA fallback serves index.html with 200 for missing public files.
+      if (
+        headerType.includes("text/html") ||
+        headerType.includes("application/json")
+      ) {
+        this.useFileMusic = false;
+        return false;
+      }
       const blob = await response.blob();
-      if (blob.size < 1024) {
+      const blobType = blob.type || headerType;
+      if (
+        blob.size < 1024 ||
+        (blobType.length > 0 &&
+          !blobType.startsWith("audio/") &&
+          !blobType.includes("octet-stream") &&
+          !blobType.includes("mpeg"))
+      ) {
         this.useFileMusic = false;
         return false;
       }
