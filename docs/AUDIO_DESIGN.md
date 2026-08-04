@@ -24,10 +24,14 @@ If Web Audio is missing or fails, all play methods no-op — gameplay continues.
 | Level up                         | Rising triad                                                       |
 | Game over                        | Descending low tones                                               |
 
-## Isolation
+## Background music
 
-`src/audio/` does not import the engine class. The app maps `GameEvent`s to audio calls. Volume and mute are persisted via `settingsStorage`.
+An original ambient recital loop (`musicDefinitions.ts`) plays during active gameplay:
 
-## Synthesis notes
+- Soft waltz-feel piano melody + broken-chord accompaniment (C major)
+- Generated entirely with oscillators — no sampled or copyrighted audio
+- Starts when a session begins; pauses with the game; stops on game over / menu
+- Routed through a separate music bus (quieter than SFX) under the master gain
+- Respects mute / volume; safe no-op if Web Audio is unavailable
 
-Tones use simple oscillators (sine / triangle) with ADSR-like exponential gain envelopes for a soft piano-adjacent timbre—not a sampled piano.
+SFX remain event-driven and unchanged in role.

@@ -107,10 +107,18 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    audioRef.current?.setMuted(muted);
-    audioRef.current?.setVolume(volume);
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.setMuted(muted);
+    audio.setVolume(volume);
     saveSettings({ muted, volume });
-  }, [muted, volume]);
+    // If unmuted during an active recital, keep the loop going
+    if (!muted && screen === "playing" && ui.phase === "playing") {
+      if (!audio.isMusicPlaying()) {
+        audio.startMusic();
+      }
+    }
+  }, [muted, volume, screen, ui.phase]);
 
   const syncUi = useCallback((state: GameState) => {
     setUi((prev) => {
@@ -188,8 +196,15 @@ export function App() {
             );
             break;
           case "gameOver":
+            audio?.stopMusic();
             audio?.play("gameOver");
             saveHighScore(state.score);
+            break;
+          case "pause":
+            audio?.pauseMusic();
+            break;
+          case "resume":
+            audio?.resumeMusic();
             break;
           case "spawn":
             if (event.pieceType) {
@@ -228,10 +243,12 @@ export function App() {
     particlesRef.current = [];
     trailRef.current = null;
     setScreen("playing");
+    audioRef.current?.startMusic();
     commitState(state);
   }, [commitState, ensureAudio]);
 
   const returnToMenu = useCallback(() => {
+    audioRef.current?.stopMusic();
     setScreen("start");
     setUi((prev) => ({
       ...prev,
