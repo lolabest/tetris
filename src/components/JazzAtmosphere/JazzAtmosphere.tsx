@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
-import styles from './JazzAtmosphere.module.css';
+import { useEffect, useRef } from "react";
+import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
+import styles from "./JazzAtmosphere.module.css";
 
 interface SmokePuff {
   x: number;
@@ -24,7 +24,7 @@ export function JazzAtmosphere() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let frameId = 0;
@@ -42,11 +42,11 @@ export function JazzAtmosphere() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
-    const spawn = (side: 'left' | 'right'): void => {
+    const spawn = (side: "left" | "right"): void => {
       const w = window.innerWidth;
       const h = window.innerHeight;
       const source =
-        side === 'left'
+        side === "left"
           ? { x: w * 0.1 + Math.random() * 50, y: h * 0.82 }
           : { x: w * 0.82 + Math.random() * 50, y: h * 0.8 };
       puffs.push({
@@ -70,10 +70,17 @@ export function JazzAtmosphere() {
         [w * 0.12, h * 0.7],
         [w * 0.88, h * 0.68],
       ] as const) {
-        const haze = ctx.createRadialGradient(x, y, 8, x, y - h * 0.15, w * 0.28);
-        haze.addColorStop(0, 'rgba(210, 195, 170, 0.22)');
-        haze.addColorStop(0.5, 'rgba(150, 135, 115, 0.1)');
-        haze.addColorStop(1, 'rgba(150, 135, 115, 0)');
+        const haze = ctx.createRadialGradient(
+          x,
+          y,
+          8,
+          x,
+          y - h * 0.15,
+          w * 0.28,
+        );
+        haze.addColorStop(0, "rgba(210, 195, 170, 0.22)");
+        haze.addColorStop(0.5, "rgba(150, 135, 115, 0.1)");
+        haze.addColorStop(1, "rgba(150, 135, 115, 0)");
         ctx.fillStyle = haze;
         ctx.fillRect(0, 0, w, h);
       }
@@ -92,7 +99,7 @@ export function JazzAtmosphere() {
       ctx.clearRect(0, 0, w, h);
 
       if (now - lastSpawn > 180 && puffs.length < 64) {
-        spawn(sideToggle ? 'left' : 'right');
+        spawn(sideToggle ? "left" : "right");
         sideToggle = !sideToggle;
         lastSpawn = now;
       }
@@ -119,7 +126,15 @@ export function JazzAtmosphere() {
         gradient.addColorStop(1, `rgba(70, 55, 40, 0)`);
         ctx.fillStyle = gradient;
         ctx.beginPath();
-        ctx.ellipse(p.x, p.y, p.r * 1.15, p.r * 0.85, p.wobble * 0.2, 0, Math.PI * 2);
+        ctx.ellipse(
+          p.x,
+          p.y,
+          p.r * 1.15,
+          p.r * 0.85,
+          p.wobble * 0.2,
+          0,
+          Math.PI * 2,
+        );
         ctx.fill();
       }
 
@@ -127,18 +142,18 @@ export function JazzAtmosphere() {
     };
 
     resize();
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
 
     if (reducedMotion) {
       paintStatic();
       return () => {
         running = false;
-        window.removeEventListener('resize', resize);
+        window.removeEventListener("resize", resize);
       };
     }
 
     for (let i = 0; i < 16; i += 1) {
-      spawn(i % 2 === 0 ? 'left' : 'right');
+      spawn(i % 2 === 0 ? "left" : "right");
       const p = puffs[puffs.length - 1];
       if (p) {
         p.life = Math.random() * p.maxLife * 0.55;
@@ -151,12 +166,16 @@ export function JazzAtmosphere() {
     return () => {
       running = false;
       cancelAnimationFrame(frameId);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener("resize", resize);
     };
   }, [reducedMotion]);
 
   return (
-    <div className={styles.root} data-testid="jazz-atmosphere" aria-hidden="true">
+    <div
+      className={styles.root}
+      data-testid="jazz-atmosphere"
+      aria-hidden="true"
+    >
       <div className={styles.wood} />
       <div className={styles.curtain} />
       <div className={styles.lampLeft} />

@@ -448,8 +448,8 @@ export function App() {
                 disabled={ui.phase === "paused" || ui.phase === "gameover"}
               />
             </div>
-        </main>
-      )}
+          </main>
+        )}
       </div>
     </>
   );

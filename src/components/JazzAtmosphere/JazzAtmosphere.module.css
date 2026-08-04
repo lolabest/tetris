@@ -5,9 +5,21 @@
   pointer-events: none;
   overflow: hidden;
   background:
-    radial-gradient(ellipse 90% 70% at 12% 95%, rgba(160, 90, 30, 0.45), transparent 55%),
-    radial-gradient(ellipse 80% 65% at 92% 90%, rgba(130, 70, 25, 0.38), transparent 52%),
-    radial-gradient(ellipse 100% 70% at 50% -5%, rgba(220, 160, 60, 0.22), transparent 48%),
+    radial-gradient(
+      ellipse 90% 70% at 12% 95%,
+      rgba(160, 90, 30, 0.45),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 80% 65% at 92% 90%,
+      rgba(130, 70, 25, 0.38),
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse 100% 70% at 50% -5%,
+      rgba(220, 160, 60, 0.22),
+      transparent 48%
+    ),
     linear-gradient(170deg, #2a1a10 0%, #140e0a 40%, #070504 100%);
 }
 
@@ -32,12 +44,11 @@
   position: absolute;
   inset: 0 0 auto;
   height: 28%;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(60, 18, 18, 0.55) 0 18px,
-      rgba(40, 12, 12, 0.65) 18px 36px
-    );
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(60, 18, 18, 0.55) 0 18px,
+    rgba(40, 12, 12, 0.65) 18px 36px
+  );
   mask-image: linear-gradient(180deg, #000 40%, transparent 100%);
   opacity: 0.55;
 }
@@ -62,7 +73,11 @@
 .lampRight {
   right: -8%;
   bottom: 2%;
-  background: radial-gradient(circle, rgba(230, 140, 50, 0.55), transparent 68%);
+  background: radial-gradient(
+    circle,
+    rgba(230, 140, 50, 0.55),
+    transparent 68%
+  );
   animation-delay: 1.4s;
 }
 
@@ -73,7 +88,11 @@
   width: min(80vw, 720px);
   height: 50vh;
   transform: translateX(-50%);
-  background: radial-gradient(ellipse at center top, rgba(255, 200, 90, 0.28), transparent 65%);
+  background: radial-gradient(
+    ellipse at center top,
+    rgba(255, 200, 90, 0.28),
+    transparent 65%
+  );
 }
 
 .floor {
@@ -110,11 +129,11 @@
   opacity: 0.95;
 }
 
-.ashtray[data-side='left'] {
+.ashtray[data-side="left"] {
   left: 6%;
 }
 
-.ashtray[data-side='right'] {
+.ashtray[data-side="right"] {
   right: 8%;
 }
 
@@ -131,7 +150,7 @@
   box-shadow: 0 0 10px rgba(255, 120, 40, 0.35);
 }
 
-.ashtray[data-side='right'] .cigar {
+.ashtray[data-side="right"] .cigar {
   left: auto;
   right: 24%;
   transform: rotate(18deg);
@@ -144,12 +163,18 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: radial-gradient(circle, #ffe0a0 0%, #ff8a30 45%, #c04010 70%, transparent 75%);
+  background: radial-gradient(
+    circle,
+    #ffe0a0 0%,
+    #ff8a30 45%,
+    #c04010 70%,
+    transparent 75%
+  );
   box-shadow: 0 0 12px 4px rgba(255, 120, 40, 0.55);
   animation: ember calc(1.8s * var(--pb-motion, 1)) ease-in-out infinite;
 }
 
-.ashtray[data-side='right'] .ember {
+.ashtray[data-side="right"] .ember {
   left: auto;
   right: calc(24% - 2px);
 }
@@ -157,7 +182,11 @@
 .vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.62) 100%);
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    rgba(0, 0, 0, 0.62) 100%
+  );
 }
 
 .grain {
@@ -197,11 +226,11 @@
     transform: scale(0.9);
   }
 
-  .ashtray[data-side='left'] {
+  .ashtray[data-side="left"] {
     left: 2%;
   }
 
-  .ashtray[data-side='right'] {
+  .ashtray[data-side="right"] {
     right: 3%;
   }
 
