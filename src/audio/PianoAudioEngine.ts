@@ -37,7 +37,6 @@ export class PianoAudioEngine {
   private musicPlaying = false;
   private musicPaused = false;
   private musicTimer: ReturnType<typeof setTimeout> | null = null;
-  private nextLoopTime = 0;
   private scheduledMusicNodes: Array<{ osc: OscillatorNode; gain: GainNode }> =
     [];
 
