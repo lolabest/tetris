@@ -22,6 +22,7 @@ import { tryRotate } from "./rotation";
 import { computeScoreDelta, levelFromLines } from "./scoring";
 import type {
   ActivePiece,
+  Board,
   EngineConfig,
   EngineDeps,
   GameEvent,
@@ -578,6 +579,23 @@ export class GameEngine {
     }
 
     return engine.state;
+  }
+
+  /**
+   * Test helper: replace the board and attempt to spawn the next piece.
+   * Used to exercise game-over without playing through a full stack-out.
+   */
+  forceSpawnWithBoard(board: Board): GameState {
+    this.engine.state = {
+      ...this.engine.state,
+      board: board.map((row) => [...row]),
+      active: null,
+      phase: "playing",
+      clearing: null,
+      lastEvents: [],
+    };
+    this.engine.state = spawnPiece(this.engine, []);
+    return this.engine.state;
   }
 }
 

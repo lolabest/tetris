@@ -232,44 +232,18 @@ describe("GameEngine", () => {
     expect(engine.getState().phase).toBe("playing");
   });
 
-  it("reaches game over when the stack blocks spawn", () => {
-    const now = { t: 0 };
+  it("detects game over when spawn is blocked", () => {
     const engine = createGameEngine({
       random: createSeededRandom(6),
-      now: () => now.t,
+      now: () => 0,
     });
     engine.start();
-
-    for (let i = 0; i < 120; i += 1) {
-      const phase = engine.getState().phase;
-      if (phase === "gameover") {
-        break;
-      }
-      if (phase === "clearing") {
-        flushClearing(engine, now);
-        continue;
-      }
-      if (phase === "paused") {
-        engine.handleInput("pause");
-      }
-      if (engine.getState().phase === "playing") {
-        // Nudge pieces toward stacking without always clearing
-        if (i % 3 === 0) engine.handleInput("moveLeft");
-        if (i % 3 === 1) engine.handleInput("moveRight");
-        engine.handleInput("hardDrop");
-        flushClearing(engine, now);
-      }
-    }
-
-    // Fallback: verify blocked spawn semantics used by the engine
     const full = createEmptyBoard().map((row) =>
       row.map(() => "O" as TetrominoType),
     );
-    expect(canPlace(full, piece("T", 3, 0))).toBe(false);
-
-    // With enough drops the board should eventually game-over OR we accept the spawn check
-    const ended = engine.getState().phase === "gameover";
-    expect(ended || !canPlace(full, piece("I", 3, 0))).toBe(true);
+    const state = engine.forceSpawnWithBoard(full);
+    expect(state.phase).toBe("gameover");
+    expect(state.lastEvents.some((e) => e.type === "gameOver")).toBe(true);
   });
 
   it("is deterministic with the same seed", () => {
