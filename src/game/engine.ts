@@ -95,6 +95,7 @@ function createInitialState(
     score: 0,
     lines: 0,
     level: 1,
+    combo: 0,
     phase: "idle",
     dropIntervalMs: dropIntervalForLevel(1, config),
     lockDelayMs: config.lockDelayMs,
@@ -161,6 +162,7 @@ function beginClear(
       ...engine.state,
       board,
       active: null,
+      combo: 0,
       lastEvents: events,
     };
     return spawnPiece(engine, events);
@@ -194,7 +196,12 @@ function finishClear(engine: InternalEngine): GameState {
   const previousLevel = engine.state.level;
   const totalLines = engine.state.lines + linesCleared;
   const level = levelFromLines(totalLines, engine.config.linesPerLevel);
-  const scoreGain = computeScoreDelta({ linesCleared, level: previousLevel });
+  const combo = engine.state.combo + 1;
+  const scoreGain = computeScoreDelta({
+    linesCleared,
+    level: previousLevel,
+    combo: combo > 1 ? combo - 1 : 0,
+  });
   const events: GameEvent[] = [];
 
   if (level > previousLevel) {
@@ -209,6 +216,7 @@ function finishClear(engine: InternalEngine): GameState {
         board: clearedBoard,
         lines: totalLines,
         level,
+        combo,
         score: engine.state.score + scoreGain,
         dropIntervalMs: dropIntervalForLevel(level, engine.config),
         phase: "gameover",
@@ -227,6 +235,7 @@ function finishClear(engine: InternalEngine): GameState {
     board: clearedBoard,
     lines: totalLines,
     level,
+    combo,
     score: engine.state.score + scoreGain,
     dropIntervalMs: dropIntervalForLevel(level, engine.config),
     clearing: null,

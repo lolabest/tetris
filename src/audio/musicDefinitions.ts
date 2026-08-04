@@ -254,11 +254,31 @@ const COUNTER_MELODY: readonly MusicNote[] = [
   n(B3, 59.5, 0.5, 0.1),
 ];
 
+/** Warm saxophone answers — original phrases, not a copyrighted tune. */
+const SAX_VOICE: readonly MusicNote[] = [
+  n(G4, 2, 1.25, 0.22, "sawtooth"),
+  n(E4, 3.5, 0.75, 0.18, "sawtooth"),
+  n(A4, 6, 1.5, 0.24, "sawtooth"),
+  n(F4, 10.5, 1.25, 0.2, "sawtooth"),
+  n(C5, 14, 1.5, 0.22, "triangle"),
+  n(Bb4, 18.5, 1, 0.2, "sawtooth"),
+  n(G4, 22, 1.25, 0.22, "sawtooth"),
+  n(E5, 26.5, 1.5, 0.24, "triangle"),
+  n(D5, 33, 1.25, 0.22, "sawtooth"),
+  n(C5, 37.5, 1.5, 0.24, "sawtooth"),
+  n(A4, 42, 1.25, 0.2, "triangle"),
+  n(G4, 46.5, 1, 0.18, "sawtooth"),
+  n(E4, 50.5, 1.25, 0.2, "sawtooth"),
+  n(C5, 54.5, 1.5, 0.24, "triangle"),
+  n(G4, 61, 2, 0.22, "sawtooth"),
+];
+
 export const RECITAL_LOOP: readonly MusicNote[] = [
   ...ACCOMPANIMENT,
   ...MELODY_LEAD,
   ...MELODY_DOUBLE,
   ...COUNTER_MELODY,
+  ...SAX_VOICE,
 ];
 
 export function secondsPerBeat(bpm: number = MUSIC_BPM): number {

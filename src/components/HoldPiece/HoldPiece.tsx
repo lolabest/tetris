@@ -37,7 +37,9 @@ export function HoldPiece({ hold, canHold }: HoldPieceProps) {
         className={styles.canvas}
         aria-label={hold ? `Held piece: ${hold}` : "No held piece"}
       />
-      <p className={styles.hint}>{canHold ? "Ready" : "Used"}</p>
+      <p className={styles.hint}>
+        <kbd>C</kbd> hold key
+      </p>
     </section>
   );
 }

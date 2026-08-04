@@ -1,0 +1,67 @@
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.7rem;
+}
+
+.compact {
+  justify-content: flex-end;
+}
+
+.toggle {
+  appearance: none;
+  border: 1px solid var(--pb-border);
+  background: rgba(12, 10, 8, 0.72);
+  color: var(--pb-ivory-dim);
+  border-radius: var(--pb-radius);
+  padding: 0.35rem 0.65rem;
+  cursor: pointer;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.toggle:hover {
+  color: var(--pb-cream);
+  border-color: var(--pb-gold-soft);
+}
+
+.toggle[aria-pressed="true"] {
+  color: var(--pb-gold);
+  border-color: rgba(212, 168, 75, 0.55);
+  background: rgba(212, 168, 75, 0.1);
+}
+
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 6.5rem;
+}
+
+.volumeLabel {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pb-muted);
+}
+
+.volume input {
+  width: 100%;
+  accent-color: var(--pb-gold);
+}
+
+@media (max-width: 520px) {
+  .volume {
+    min-width: 4.5rem;
+  }
+
+  .volumeLabel {
+    display: none;
+  }
+}

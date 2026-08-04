@@ -1,10 +1,14 @@
 export interface UserSettings {
-  readonly muted: boolean;
+  readonly musicEnabled: boolean;
+  readonly sfxEnabled: boolean;
   readonly volume: number;
+  /** @deprecated kept for migration from older saves */
+  readonly muted?: boolean;
 }
 
 export const defaultSettings: UserSettings = {
-  muted: false,
+  musicEnabled: true,
+  sfxEnabled: true,
   volume: 0.55,
 };
 
@@ -17,14 +21,37 @@ function clampVolume(value: number): number {
   return Math.min(1, Math.max(0, value));
 }
 
-function isSettings(value: unknown): value is UserSettings {
-  if (typeof value !== "object" || value === null) {
-    return false;
-  }
-  const record = value as Record<string, unknown>;
-  return (
-    typeof record["muted"] === "boolean" && typeof record["volume"] === "number"
+function normalizeSettings(value: Record<string, unknown>): UserSettings {
+  const volume = clampVolume(
+    typeof value["volume"] === "number"
+      ? value["volume"]
+      : defaultSettings.volume,
   );
+  // Migrate legacy `muted`
+  if (
+    typeof value["musicEnabled"] === "boolean" ||
+    typeof value["sfxEnabled"] === "boolean"
+  ) {
+    return {
+      musicEnabled:
+        typeof value["musicEnabled"] === "boolean"
+          ? value["musicEnabled"]
+          : !(value["muted"] === true),
+      sfxEnabled:
+        typeof value["sfxEnabled"] === "boolean"
+          ? value["sfxEnabled"]
+          : !(value["muted"] === true),
+      volume,
+    };
+  }
+  if (typeof value["muted"] === "boolean") {
+    return {
+      musicEnabled: !value["muted"],
+      sfxEnabled: !value["muted"],
+      volume,
+    };
+  }
+  return { ...defaultSettings, volume };
 }
 
 export function loadSettings(): UserSettings {
@@ -34,13 +61,10 @@ export function loadSettings(): UserSettings {
       return defaultSettings;
     }
     const parsed: unknown = JSON.parse(raw);
-    if (!isSettings(parsed)) {
+    if (typeof parsed !== "object" || parsed === null) {
       return defaultSettings;
     }
-    return {
-      muted: parsed.muted,
-      volume: clampVolume(parsed.volume),
-    };
+    return normalizeSettings(parsed as Record<string, unknown>);
   } catch {
     return defaultSettings;
   }
@@ -48,7 +72,8 @@ export function loadSettings(): UserSettings {
 
 export function saveSettings(settings: UserSettings): UserSettings {
   const next: UserSettings = {
-    muted: settings.muted,
+    musicEnabled: settings.musicEnabled,
+    sfxEnabled: settings.sfxEnabled,
     volume: clampVolume(settings.volume),
   };
   try {

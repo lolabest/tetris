@@ -2,14 +2,15 @@
 
 ## Goals
 
-Provide calm, piano-like feedback that reinforces actions without depending on external audio assets or copyrighted music.
+Provide calm, piano-and-sax feedback that reinforces actions without requiring external audio assets. Copyrighted music is never bundled by default.
 
 ## Lifecycle
 
-1. `PianoAudioEngine` is constructed muted/unmuted from settings.
-2. `unlock()` must run inside a user gesture (start button, mute toggle, etc.).
-3. An `AudioContext` + master `GainNode` are created; resume if suspended.
-4. `dispose()` closes the context on app unmount.
+1. `PianoAudioEngine` is constructed from `musicEnabled`, `sfxEnabled`, and `volume` settings.
+2. `unlock()` must run inside a user gesture (Play, sound toggles, etc.).
+3. An `AudioContext` plus master / SFX / music buses are created; resume if suspended.
+4. Optional licensed file `public/audio/dear-simon.mp3` is probed via `fetch` after unlock. If absent or invalid, the engine falls back to the procedural loop with no console errors.
+5. `dispose()` closes the context on app unmount.
 
 If Web Audio is missing or fails, all play methods no-op — gameplay continues.
 
@@ -26,12 +27,13 @@ If Web Audio is missing or fails, all play methods no-op — gameplay continues.
 
 ## Background music
 
-An original late-night jazz piano loop (`musicDefinitions.ts`) plays during active gameplay:
+Priority:
 
-- Swing-feel melody with blue notes + stride/walking accompaniment (C blues / dominant cycle)
-- Generated entirely with oscillators — no sampled or copyrighted audio
-- Starts when a session begins; pauses with the game; stops on game over / menu
-- Routed through a separate music bus (quieter than SFX) under the master gain
-- Respects mute / volume; safe no-op if Web Audio is unavailable
+1. Licensed file at `/audio/dear-simon.mp3` when the user supplies it (looped through the music bus).
+2. Otherwise an original procedural piano-and-saxophone loop (`musicDefinitions.ts`).
 
-SFX remain event-driven and unchanged in role.
+Behaviour:
+
+- Starts when a session begins; fades down on pause; resumes smoothly; stops on game over / menu
+- Music On/Off and SFX On/Off are independent; volume is persisted
+- Loop handoff for the procedural track avoids hard cuts

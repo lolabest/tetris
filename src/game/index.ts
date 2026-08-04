@@ -48,6 +48,7 @@ export {
   lineClearScore,
   levelFromLines,
   computeScoreDelta,
+  comboScore,
 } from "./scoring";
 export {
   getShapeCells,

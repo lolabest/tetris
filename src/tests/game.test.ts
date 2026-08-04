@@ -333,9 +333,25 @@ describe("localStorage adapters", () => {
 
   it("persists settings with defaults", () => {
     expect(loadSettings()).toEqual(defaultSettings);
-    saveSettings({ ...defaultSettings, muted: true, volume: 0.4 });
-    expect(loadSettings().muted).toBe(true);
+    saveSettings({
+      musicEnabled: false,
+      sfxEnabled: true,
+      volume: 0.4,
+    });
+    expect(loadSettings().musicEnabled).toBe(false);
+    expect(loadSettings().sfxEnabled).toBe(true);
     expect(loadSettings().volume).toBe(0.4);
+  });
+
+  it("migrates legacy muted settings", () => {
+    localStorage.setItem(
+      "piano-blocks:settings",
+      JSON.stringify({ muted: true, volume: 0.3 }),
+    );
+    const migrated = loadSettings();
+    expect(migrated.musicEnabled).toBe(false);
+    expect(migrated.sfxEnabled).toBe(false);
+    expect(migrated.volume).toBe(0.3);
   });
 
   it("survives corrupt storage", () => {

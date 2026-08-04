@@ -25,7 +25,11 @@ import { useKeyboardControls } from "../hooks/useKeyboardControls";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { useTouchControls } from "../hooks/useTouchControls";
 import { getHighScore, saveHighScore } from "../storage/highScoreStorage";
-import { loadSettings, saveSettings } from "../storage/settingsStorage";
+import {
+  loadSettings,
+  saveSettings,
+  type UserSettings,
+} from "../storage/settingsStorage";
 import styles from "./App.module.css";
 
 type Screen = "start" | "playing";
@@ -34,6 +38,7 @@ interface UiSnapshot {
   score: number;
   level: number;
   lines: number;
+  combo: number;
   highScore: number;
   hold: GameState["hold"];
   canHold: boolean;
@@ -46,6 +51,7 @@ function toSnapshot(state: GameState): UiSnapshot {
     score: state.score,
     level: state.level,
     lines: state.lines,
+    combo: state.combo,
     highScore: state.highScore,
     hold: state.hold,
     canHold: state.canHold,
@@ -59,6 +65,7 @@ function snapshotsEqual(a: UiSnapshot, b: UiSnapshot): boolean {
     a.score === b.score &&
     a.level === b.level &&
     a.lines === b.lines &&
+    a.combo === b.combo &&
     a.highScore === b.highScore &&
     a.hold === b.hold &&
     a.canHold === b.canHold &&
@@ -82,14 +89,14 @@ export function App() {
     score: 0,
     level: 1,
     lines: 0,
+    combo: 0,
     highScore: getHighScore(),
     hold: null,
     canHold: true,
     nextQueue: [],
     phase: "idle",
   }));
-  const [muted, setMuted] = useState(() => loadSettings().muted);
-  const [volume, setVolume] = useState(() => loadSettings().volume);
+  const [settings, setSettings] = useState<UserSettings>(() => loadSettings());
   const [levelFlash, setLevelFlash] = useState(false);
 
   useEffect(() => {
@@ -98,28 +105,40 @@ export function App() {
       now: () => performance.now(),
       highScore: getHighScore(),
     });
-    audioRef.current = new PianoAudioEngine({ muted, volume });
+    const initial = loadSettings();
+    audioRef.current = new PianoAudioEngine({
+      musicEnabled: initial.musicEnabled,
+      sfxEnabled: initial.sfxEnabled,
+      volume: initial.volume,
+    });
     return () => {
       audioRef.current?.dispose();
       audioRef.current = null;
       engineRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only
   }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    audio.setMuted(muted);
-    audio.setVolume(volume);
-    saveSettings({ muted, volume });
-    // If unmuted during an active recital, keep the loop going
-    if (!muted && screen === "playing" && ui.phase === "playing") {
+    audio.setMusicEnabled(settings.musicEnabled);
+    audio.setSfxEnabled(settings.sfxEnabled);
+    audio.setVolume(settings.volume);
+    saveSettings(settings);
+    if (
+      settings.musicEnabled &&
+      screen === "playing" &&
+      ui.phase === "playing"
+    ) {
       if (!audio.isMusicPlaying()) {
         audio.startMusic();
       }
     }
-  }, [muted, volume, screen, ui.phase]);
+  }, [settings, screen, ui.phase]);
+
+  const updateSettings = useCallback((patch: Partial<UserSettings>) => {
+    setSettings((prev) => ({ ...prev, ...patch }));
+  }, []);
 
   const syncUi = useCallback((state: GameState) => {
     setUi((prev) => {
@@ -257,6 +276,7 @@ export function App() {
       score: 0,
       lines: 0,
       level: 1,
+      combo: 0,
       hold: null,
       highScore: getHighScore(),
     }));
@@ -345,44 +365,54 @@ export function App() {
     draw(state, now);
   });
 
-  // Draw once when entering play screen (canvas mounts)
   useEffect(() => {
     if (screen !== "playing") return;
     const state = engineRef.current?.getState();
     if (state) {
-      // Defer to after canvas mount
       const id = requestAnimationFrame(() => draw(state, performance.now()));
       return () => cancelAnimationFrame(id);
     }
     return undefined;
   }, [screen, draw]);
 
+  const soundHandlers = {
+    musicEnabled: settings.musicEnabled,
+    sfxEnabled: settings.sfxEnabled,
+    volume: settings.volume,
+    onMusicChange: (enabled: boolean) => {
+      void ensureAudio();
+      updateSettings({ musicEnabled: enabled });
+    },
+    onSfxChange: (enabled: boolean) => {
+      void ensureAudio();
+      updateSettings({ sfxEnabled: enabled });
+    },
+    onVolumeChange: (v: number) => {
+      void ensureAudio();
+      updateSettings({ volume: v });
+    },
+  };
+
   return (
     <>
       <JazzAtmosphere />
       <div className={styles.app}>
-        <GameHeader
-          muted={muted}
-          volume={volume}
-          onToggleMute={() => {
-            void ensureAudio();
-            setMuted((m) => !m);
-          }}
-          onVolumeChange={(v) => {
-            void ensureAudio();
-            setVolume(v);
-            if (v > 0 && muted) {
-              setMuted(false);
-            }
-          }}
-          showPause={screen === "playing" && ui.phase === "playing"}
-          onPause={() => onAction("pause")}
-        />
+        {screen === "playing" ? (
+          <GameHeader
+            {...soundHandlers}
+            showBrand
+            showPause={ui.phase === "playing"}
+            onPause={() => onAction("pause")}
+          />
+        ) : (
+          <GameHeader {...soundHandlers} showBrand={false} />
+        )}
 
         {screen === "start" ? (
           <StartScreen
             highScore={ui.highScore}
             onStart={() => void startGame()}
+            {...soundHandlers}
           />
         ) : (
           <main
@@ -390,26 +420,6 @@ export function App() {
           >
             <div className={styles.holdSlot}>
               <HoldPiece hold={ui.hold} canHold={ui.canHold} />
-            </div>
-
-            <div className={styles.statsSlot}>
-              <GameStats
-                score={ui.score}
-                level={ui.level}
-                lines={ui.lines}
-                highScore={Math.max(ui.highScore, ui.score)}
-              />
-              <div
-                className={styles.guide}
-                aria-label="Keyboard controls summary"
-              >
-                <p>
-                  <kbd>←→</kbd> move · <kbd>↑/X</kbd> rotate · <kbd>Z</kbd> CCW
-                </p>
-                <p>
-                  <kbd>Space</kbd> drop · <kbd>C</kbd> hold · <kbd>P</kbd> pause
-                </p>
-              </div>
             </div>
 
             <div className={styles.stage}>
@@ -436,9 +446,15 @@ export function App() {
               ) : null}
             </div>
 
-            <div className={styles.nextSlot}>
+            <aside className={styles.rightRail} aria-label="Next and program">
               <NextPiece queue={ui.nextQueue} />
-            </div>
+              <GameStats
+                score={ui.score}
+                level={ui.level}
+                lines={ui.lines}
+                combo={ui.combo}
+              />
+            </aside>
 
             <div className={styles.touch}>
               <TouchControls

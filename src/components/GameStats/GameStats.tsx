@@ -4,20 +4,21 @@ interface GameStatsProps {
   readonly score: number;
   readonly level: number;
   readonly lines: number;
-  readonly highScore: number;
+  readonly combo: number;
 }
 
 function formatScore(n: number): string {
   return n.toLocaleString("en-US");
 }
 
-export function GameStats({ score, level, lines, highScore }: GameStatsProps) {
+export function GameStats({ score, level, lines, combo }: GameStatsProps) {
   return (
     <section
       className={styles.stats}
-      aria-label="Game statistics"
+      aria-label="Concert program"
       data-testid="game-stats"
     >
+      <h2 className={styles.heading}>Program</h2>
       <div className={styles.item}>
         <span className={styles.label}>Score</span>
         <span className={styles.value} data-testid="stat-score">
@@ -36,10 +37,10 @@ export function GameStats({ score, level, lines, highScore }: GameStatsProps) {
           {lines}
         </span>
       </div>
-      <div className={styles.item}>
-        <span className={styles.label}>Best</span>
-        <span className={styles.value} data-testid="stat-high-score">
-          {formatScore(highScore)}
+      <div className={`${styles.item} ${combo > 0 ? styles.comboHot : ""}`}>
+        <span className={styles.label}>Combo</span>
+        <span className={styles.value} data-testid="stat-combo">
+          {combo > 0 ? `×${combo}` : "—"}
         </span>
       </div>
     </section>

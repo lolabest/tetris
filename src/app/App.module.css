@@ -1,21 +1,21 @@
 .app {
   position: relative;
   z-index: 1;
-  width: min(1100px, 100%);
+  width: min(1120px, 100%);
   margin: 0 auto;
-  padding: 0.4rem 1rem 1rem;
+  padding: 0.25rem 1rem 1rem;
   min-height: 100%;
 }
 
 .game {
   display: grid;
-  grid-template-columns: minmax(7.5rem, 11rem) minmax(0, 1fr) minmax(
-      7.5rem,
-      11rem
+  grid-template-columns: minmax(7.5rem, 10.5rem) minmax(0, 1fr) minmax(
+      8rem,
+      11.5rem
     );
   grid-template-areas:
-    "hold stage next"
-    "stats stage next";
+    "hold stage right"
+    ". stage right";
   gap: 1rem;
   align-items: start;
   position: relative;
@@ -23,17 +23,15 @@
 
 .holdSlot {
   grid-area: hold;
+  margin-top: 0.35rem;
 }
 
-.statsSlot {
-  grid-area: stats;
+.rightRail {
+  grid-area: right;
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
-}
-
-.nextSlot {
-  grid-area: next;
+  margin-top: 0.35rem;
 }
 
 .stage {
@@ -41,26 +39,6 @@
   position: relative;
   display: flex;
   justify-content: center;
-}
-
-.guide {
-  font-size: 0.75rem;
-  color: var(--pb-muted);
-  line-height: 1.55;
-}
-
-.guide p {
-  margin: 0 0 0.35rem;
-}
-
-.guide kbd {
-  display: inline-block;
-  padding: 0.05rem 0.3rem;
-  border: 1px solid var(--pb-border);
-  border-radius: 3px;
-  background: var(--pb-bg-panel);
-  color: var(--pb-ivory-dim);
-  font-size: 0.7rem;
 }
 
 .touch {
@@ -88,14 +66,13 @@
   .game {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
-      "hold next"
+      "hold right"
       "stage stage"
-      "stats stats"
       "touch touch";
   }
 
-  .guide {
-    display: none;
+  .rightRail {
+    margin-top: 0;
   }
 
   .touch {

@@ -70,6 +70,7 @@ export interface GameState {
   readonly score: number;
   readonly lines: number;
   readonly level: number;
+  readonly combo: number;
   readonly phase: GamePhase;
   readonly dropIntervalMs: number;
   readonly lockDelayMs: number;

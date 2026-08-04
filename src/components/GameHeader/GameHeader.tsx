@@ -1,55 +1,56 @@
+import { SoundSettings } from "../SoundSettings/SoundSettings";
 import styles from "./GameHeader.module.css";
 
 interface GameHeaderProps {
-  readonly muted: boolean;
+  readonly musicEnabled: boolean;
+  readonly sfxEnabled: boolean;
   readonly volume: number;
-  readonly onToggleMute: () => void;
+  readonly onMusicChange: (enabled: boolean) => void;
+  readonly onSfxChange: (enabled: boolean) => void;
   readonly onVolumeChange: (volume: number) => void;
   readonly onPause?: () => void;
   readonly showPause?: boolean;
+  readonly showBrand?: boolean;
 }
 
 export function GameHeader({
-  muted,
+  musicEnabled,
+  sfxEnabled,
   volume,
-  onToggleMute,
+  onMusicChange,
+  onSfxChange,
   onVolumeChange,
   onPause,
   showPause = false,
+  showBrand = true,
 }: GameHeaderProps) {
   return (
     <header className={styles.header}>
-      <div className={styles.brand}>
-        <span className={styles.mark} aria-hidden="true" />
-        <h1 className={styles.title}>Piano Blocks</h1>
-      </div>
+      <div className={styles.spacer} aria-hidden="true" />
+
+      {showBrand ? (
+        <div className={styles.brand}>
+          <h1 className={styles.title}>Piano Blocks</h1>
+          <p className={styles.slogan}>Every block plays a note.</p>
+        </div>
+      ) : (
+        <div className={styles.brand} aria-hidden="true" />
+      )}
+
       <div className={styles.controls}>
-        <button
-          type="button"
-          className={styles.iconButton}
-          onClick={onToggleMute}
-          aria-pressed={muted}
-          aria-label={muted ? "Unmute sound" : "Mute sound"}
-        >
-          {muted ? "Muted" : "Sound"}
-        </button>
-        <label className={styles.volume}>
-          <span className={styles.srOnly}>Volume</span>
-          <input
-            type="range"
-            min={0}
-            max={1}
-            step={0.01}
-            value={volume}
-            onChange={(e) => onVolumeChange(Number(e.target.value))}
-            aria-label="Volume"
-            disabled={muted}
-          />
-        </label>
+        <SoundSettings
+          compact
+          musicEnabled={musicEnabled}
+          sfxEnabled={sfxEnabled}
+          volume={volume}
+          onMusicChange={onMusicChange}
+          onSfxChange={onSfxChange}
+          onVolumeChange={onVolumeChange}
+        />
         {showPause && onPause ? (
           <button
             type="button"
-            className={styles.iconButton}
+            className={styles.pause}
             onClick={onPause}
             aria-label="Pause game"
           >
