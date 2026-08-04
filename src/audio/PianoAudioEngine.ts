@@ -42,7 +42,7 @@ export class PianoAudioEngine {
 
   constructor(options: PianoAudioOptions = {}) {
     this.volume = options.volume ?? 0.55;
-    this.musicVolume = options.musicVolume ?? 0.32;
+    this.musicVolume = options.musicVolume ?? 0.42;
     this.muted = options.muted ?? false;
   }
 
@@ -313,9 +313,11 @@ export class PianoAudioEngine {
     osc.type = note.wave ?? "sine";
     osc.frequency.value = note.freq;
 
-    const attack = Math.min(0.04, duration * 0.15);
-    const release = Math.min(0.45, duration * 0.55);
-    const sustainEnd = startTime + Math.max(duration - release, attack + 0.02);
+    // Longer release = more singing piano sustain on melody notes
+    const attack = Math.min(0.05, duration * 0.12);
+    const release = Math.min(0.7, Math.max(0.18, duration * 0.65));
+    const sustainEnd =
+      startTime + Math.max(duration - release * 0.35, attack + 0.03);
     const end = sustainEnd + release;
 
     gain.gain.setValueAtTime(0.0001, startTime);
@@ -324,7 +326,7 @@ export class PianoAudioEngine {
       startTime + attack,
     );
     gain.gain.exponentialRampToValueAtTime(
-      Math.max(0.0001, peak * 0.55),
+      Math.max(0.0001, peak * 0.62),
       sustainEnd,
     );
     gain.gain.exponentialRampToValueAtTime(0.0001, end);

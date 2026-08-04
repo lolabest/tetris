@@ -1,6 +1,6 @@
 /**
  * Original late-night jazz piano loop for Piano Blocks.
- * Swing-feel salon jazz — not based on any copyrighted composition.
+ * Melody-forward lounge jazz — not based on any copyrighted composition.
  */
 
 export interface MusicNote {
@@ -11,18 +11,16 @@ export interface MusicNote {
   readonly wave?: OscillatorType;
 }
 
-/** Slightly laid-back lounge tempo. */
-export const MUSIC_BPM = 88;
+/** Laid-back lounge tempo — room for lyrical phrases. */
+export const MUSIC_BPM = 84;
 
-/** 8 bars of 4/4 with swing eighths ≈ 32 beats. */
-export const MUSIC_LOOP_BEATS = 32;
+/** 16 bars of 4/4 = 64 beats (full A–A–B–A melody form). */
+export const MUSIC_LOOP_BEATS = 64;
 
 const C2 = 65.41;
 const F2 = 87.31;
 const G2 = 98.0;
 const A2 = 110.0;
-const Bb2 = 116.54;
-const B2 = 123.47;
 const C3 = 130.81;
 const D3 = 146.83;
 const Eb3 = 155.56;
@@ -33,8 +31,6 @@ const A3 = 220.0;
 const Bb3 = 233.08;
 const B3 = 246.94;
 const C4 = 261.63;
-const D4 = 293.66;
-const Eb4 = 311.13;
 const E4 = 329.63;
 const F4 = 349.23;
 const G4 = 392.0;
@@ -43,143 +39,228 @@ const Bb4 = 466.16;
 const B4 = 493.88;
 const C5 = 523.25;
 const D5 = 587.33;
+const Eb5 = 622.25;
 const E5 = 659.25;
+const F5 = 698.46;
+const G5 = 783.99;
 
-/** Swing: long-short eighth pairs (2/3 + 1/3 of a beat). */
 const SWING_LONG = 2 / 3;
 const SWING_SHORT = 1 / 3;
+
+function n(
+  freq: number,
+  beat: number,
+  beats: number,
+  gain = 0.34,
+  wave: OscillatorType = "sine",
+): MusicNote {
+  return { freq, beat, beats, gain, wave };
+}
 
 function swingPair(
   beat: number,
   a: number,
   b: number,
-  gain = 0.26,
+  gain = 0.34,
 ): MusicNote[] {
   return [
-    { freq: a, beat, beats: SWING_LONG, gain, wave: "sine" },
-    {
-      freq: b,
-      beat: beat + SWING_LONG,
-      beats: SWING_SHORT,
-      gain: gain * 0.9,
-      wave: "sine",
-    },
+    n(a, beat, SWING_LONG, gain),
+    n(b, beat + SWING_LONG, SWING_SHORT, gain * 0.92),
   ];
 }
 
-/** Walking / stride-ish left hand with jazz color tones. */
+/** Soft left-hand bed — quieter so the melody leads. */
+function compBar(
+  root: number,
+  color: number,
+  fifth: number,
+  start: number,
+): MusicNote[] {
+  return [
+    n(root, start, 1.5, 0.14, "triangle"),
+    n(color, start + 0.5, 0.5, 0.08),
+    n(fifth, start + 1, 0.5, 0.08),
+    n(root * 2, start + 2, 1, 0.12, "triangle"),
+    n(color, start + 3, 0.5, 0.07),
+    n(fifth * 0.5, start + 3.5, 0.5, 0.08, "triangle"),
+  ];
+}
+
 const ACCOMPANIMENT: readonly MusicNote[] = [
-  // C7
-  { freq: C2, beat: 0, beats: 1.5, gain: 0.2, wave: "triangle" },
-  { freq: E3, beat: 0.5, beats: 0.5, gain: 0.12, wave: "sine" },
-  { freq: Bb3, beat: 1, beats: 0.5, gain: 0.12, wave: "sine" },
-  { freq: G3, beat: 1.5, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: C3, beat: 2, beats: 1, gain: 0.18, wave: "triangle" },
-  { freq: E3, beat: 3, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: Bb2, beat: 3.5, beats: 0.5, gain: 0.12, wave: "triangle" },
-  // F7
-  { freq: F2, beat: 4, beats: 1.5, gain: 0.2, wave: "triangle" },
-  { freq: A3, beat: 4.5, beats: 0.5, gain: 0.12, wave: "sine" },
-  { freq: Eb3, beat: 5, beats: 0.5, gain: 0.12, wave: "sine" },
-  { freq: C3, beat: 5.5, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: F3, beat: 6, beats: 1, gain: 0.18, wave: "triangle" },
-  { freq: A2, beat: 7, beats: 0.5, gain: 0.12, wave: "triangle" },
-  { freq: Eb3, beat: 7.5, beats: 0.5, gain: 0.11, wave: "sine" },
-  // C7
-  { freq: C2, beat: 8, beats: 1.5, gain: 0.2, wave: "triangle" },
-  { freq: G3, beat: 8.5, beats: 0.5, gain: 0.12, wave: "sine" },
-  { freq: E3, beat: 9, beats: 0.5, gain: 0.12, wave: "sine" },
-  { freq: Bb3, beat: 9.5, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: C3, beat: 10, beats: 1, gain: 0.18, wave: "triangle" },
-  { freq: E3, beat: 11, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: G2, beat: 11.5, beats: 0.5, gain: 0.13, wave: "triangle" },
-  // G7
-  { freq: G2, beat: 12, beats: 1.5, gain: 0.2, wave: "triangle" },
-  { freq: B3, beat: 12.5, beats: 0.5, gain: 0.12, wave: "sine" },
-  { freq: F3, beat: 13, beats: 0.5, gain: 0.12, wave: "sine" },
-  { freq: D3, beat: 13.5, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: G3, beat: 14, beats: 1, gain: 0.18, wave: "triangle" },
-  { freq: F2, beat: 15, beats: 0.5, gain: 0.13, wave: "triangle" },
-  { freq: B2, beat: 15.5, beats: 0.5, gain: 0.12, wave: "triangle" },
-  // C7
-  { freq: C2, beat: 16, beats: 1.5, gain: 0.2, wave: "triangle" },
-  { freq: E3, beat: 16.5, beats: 0.5, gain: 0.12, wave: "sine" },
-  { freq: Bb3, beat: 17, beats: 0.5, gain: 0.12, wave: "sine" },
-  { freq: G3, beat: 17.5, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: C3, beat: 18, beats: 1, gain: 0.18, wave: "triangle" },
-  { freq: Bb2, beat: 19, beats: 0.5, gain: 0.12, wave: "triangle" },
-  { freq: E3, beat: 19.5, beats: 0.5, gain: 0.11, wave: "sine" },
-  // A7 (secondary dominant color)
-  { freq: A2, beat: 20, beats: 1.5, gain: 0.19, wave: "triangle" },
-  { freq: C4, beat: 20.5, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: G3, beat: 21, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: E3, beat: 21.5, beats: 0.5, gain: 0.1, wave: "sine" },
-  { freq: A3, beat: 22, beats: 1, gain: 0.17, wave: "triangle" },
-  { freq: G2, beat: 23, beats: 0.5, gain: 0.12, wave: "triangle" },
-  { freq: C3, beat: 23.5, beats: 0.5, gain: 0.11, wave: "sine" },
-  // D7 → G7 turnaround
-  { freq: D3, beat: 24, beats: 1, gain: 0.19, wave: "triangle" },
-  { freq: F3, beat: 24.5, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: C4, beat: 25, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: A3, beat: 25.5, beats: 0.5, gain: 0.1, wave: "sine" },
-  { freq: G2, beat: 26, beats: 1, gain: 0.19, wave: "triangle" },
-  { freq: F3, beat: 26.5, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: B3, beat: 27, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: D3, beat: 27.5, beats: 0.5, gain: 0.1, wave: "sine" },
-  // C6 / resolve
-  { freq: C2, beat: 28, beats: 1.5, gain: 0.22, wave: "triangle" },
-  { freq: E3, beat: 28.5, beats: 0.5, gain: 0.12, wave: "sine" },
-  { freq: A3, beat: 29, beats: 0.5, gain: 0.12, wave: "sine" },
-  { freq: G3, beat: 29.5, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: C3, beat: 30, beats: 1, gain: 0.2, wave: "triangle" },
-  { freq: E3, beat: 31, beats: 0.5, gain: 0.11, wave: "sine" },
-  { freq: G3, beat: 31.5, beats: 0.5, gain: 0.12, wave: "sine" },
+  ...compBar(C2, E3, Bb3, 0),
+  ...compBar(F2, A3, Eb3, 4),
+  ...compBar(C2, G3, Bb3, 8),
+  ...compBar(G2, B3, F3, 12),
+  ...compBar(C2, E3, Bb3, 16),
+  ...compBar(F2, A3, Eb3, 20),
+  ...compBar(C2, G3, Bb3, 24),
+  ...compBar(G2, B3, F3, 28),
+  ...compBar(A2, C4, G3, 32),
+  ...compBar(D3, F3, C4, 36),
+  ...compBar(G2, B3, F3, 40),
+  ...compBar(C2, E3, A3, 44),
+  ...compBar(C2, E3, Bb3, 48),
+  ...compBar(F2, A3, Eb3, 52),
+  ...compBar(G2, B3, F3, 56),
+  ...compBar(C2, E3, G3, 60),
 ];
 
-/** Right-hand swing melody with blue notes. */
-const MELODY: readonly MusicNote[] = [
-  ...swingPair(0, E4, G4, 0.28),
-  { freq: Bb4, beat: 1, beats: 0.75, gain: 0.3 },
-  { freq: A4, beat: 1.75, beats: 0.25, gain: 0.22 },
-  { freq: G4, beat: 2, beats: 1, gain: 0.28 },
-  { freq: E4, beat: 3, beats: 1, gain: 0.26 },
-  ...swingPair(4, F4, A4, 0.28),
-  { freq: C5, beat: 5, beats: 1, gain: 0.3 },
-  { freq: Bb4, beat: 6, beats: 0.75, gain: 0.28 },
-  { freq: A4, beat: 6.75, beats: 0.25, gain: 0.22 },
-  { freq: F4, beat: 7, beats: 1, gain: 0.26 },
-  ...swingPair(8, E4, G4, 0.28),
-  { freq: C5, beat: 9, beats: 1.25, gain: 0.32 },
-  { freq: Bb4, beat: 10.25, beats: 0.75, gain: 0.26 },
-  { freq: G4, beat: 11, beats: 1, gain: 0.26 },
-  ...swingPair(12, D4, F4, 0.26),
-  { freq: B4, beat: 13, beats: 1, gain: 0.3 },
-  { freq: A4, beat: 14, beats: 0.5, gain: 0.24 },
-  { freq: G4, beat: 14.5, beats: 0.5, gain: 0.24 },
-  { freq: F4, beat: 15, beats: 1, gain: 0.26 },
-  // Second chorus — higher flourish
-  { freq: E5, beat: 16, beats: 0.75, gain: 0.3 },
-  { freq: D5, beat: 16.75, beats: 0.25, gain: 0.22 },
-  { freq: C5, beat: 17, beats: 1, gain: 0.28 },
-  { freq: Bb4, beat: 18, beats: 1, gain: 0.28 },
-  { freq: G4, beat: 19, beats: 1, gain: 0.26 },
-  ...swingPair(20, A4, C5, 0.28),
-  { freq: E5, beat: 21, beats: 1, gain: 0.3 },
-  { freq: D5, beat: 22, beats: 0.75, gain: 0.26 },
-  { freq: C5, beat: 22.75, beats: 0.25, gain: 0.2 },
-  { freq: A4, beat: 23, beats: 1, gain: 0.26 },
-  ...swingPair(24, D5, C5, 0.28),
-  { freq: B4, beat: 25, beats: 1, gain: 0.28 },
-  { freq: A4, beat: 26, beats: 0.5, gain: 0.24 },
-  { freq: G4, beat: 26.5, beats: 0.5, gain: 0.24 },
-  { freq: F4, beat: 27, beats: 1, gain: 0.26 },
-  { freq: E4, beat: 28, beats: 1.25, gain: 0.3 },
-  { freq: G4, beat: 29.25, beats: 0.75, gain: 0.26 },
-  { freq: C5, beat: 30, beats: 1.5, gain: 0.32 },
-  { freq: Eb4, beat: 31.5, beats: 0.5, gain: 0.18 },
+/**
+ * Clear singable theme — "Ivory Midnight"
+ * A–A–B–A form with a strong hook and lyrical bridge.
+ */
+const MELODY_LEAD: readonly MusicNote[] = [
+  // A1
+  n(E4, 0, 0.75, 0.42),
+  n(G4, 0.75, 0.25, 0.34),
+  n(C5, 1, 1.5, 0.48),
+  n(Bb4, 2.5, 0.5, 0.38),
+  n(A4, 3, 0.5, 0.36),
+  n(G4, 3.5, 0.5, 0.36),
+
+  n(F4, 4, 0.75, 0.4),
+  n(A4, 4.75, 0.25, 0.34),
+  n(D5, 5, 1.25, 0.48),
+  n(C5, 6.25, 0.75, 0.4),
+  n(A4, 7, 1, 0.38),
+
+  n(E4, 8, 0.5, 0.38),
+  n(G4, 8.5, 0.5, 0.36),
+  n(C5, 9, 1, 0.44),
+  n(E5, 10, 1.5, 0.5),
+  n(D5, 11.5, 0.5, 0.38),
+
+  n(B4, 12, 1, 0.42),
+  n(A4, 13, 0.5, 0.36),
+  n(G4, 13.5, 0.5, 0.36),
+  n(F4, 14, 0.75, 0.38),
+  n(E4, 14.75, 1.25, 0.42),
+
+  // A2 ornamented
+  n(E4, 16, 0.5, 0.4),
+  ...swingPair(16.5, G4, Bb4, 0.38),
+  n(C5, 17.5, 1.5, 0.48),
+  n(D5, 19, 0.5, 0.38),
+  n(Eb5, 19.5, 0.5, 0.36),
+
+  n(F5, 20, 0.75, 0.46),
+  n(E5, 20.75, 0.25, 0.34),
+  n(D5, 21, 1, 0.42),
+  n(C5, 22, 0.75, 0.4),
+  n(A4, 22.75, 0.25, 0.32),
+  n(F4, 23, 1, 0.38),
+
+  n(G4, 24, 0.5, 0.38),
+  n(C5, 24.5, 0.5, 0.4),
+  n(E5, 25, 1.25, 0.5),
+  n(G5, 26.25, 0.75, 0.46),
+  n(E5, 27, 1, 0.42),
+
+  n(D5, 28, 0.75, 0.42),
+  n(B4, 28.75, 0.25, 0.32),
+  n(A4, 29, 0.5, 0.36),
+  n(G4, 29.5, 0.5, 0.36),
+  n(F4, 30, 0.5, 0.36),
+  n(E4, 30.5, 1.5, 0.42),
+
+  // B bridge
+  n(A4, 32, 1, 0.42),
+  n(C5, 33, 1, 0.44),
+  n(E5, 34, 1.5, 0.5),
+  n(D5, 35.5, 0.5, 0.38),
+
+  n(C5, 36, 0.75, 0.42),
+  n(A4, 36.75, 0.25, 0.32),
+  n(F5, 37, 1.25, 0.48),
+  n(E5, 38.25, 0.75, 0.4),
+  n(D5, 39, 1, 0.42),
+
+  n(B4, 40, 0.75, 0.42),
+  n(D5, 40.75, 0.25, 0.34),
+  n(G5, 41, 1.5, 0.5),
+  n(F5, 42.5, 0.5, 0.38),
+  n(E5, 43, 0.5, 0.38),
+  n(D5, 43.5, 0.5, 0.36),
+
+  n(C5, 44, 1.25, 0.44),
+  n(Bb4, 45.25, 0.75, 0.38),
+  n(A4, 46, 0.75, 0.38),
+  n(G4, 46.75, 1.25, 0.42),
+
+  // A3 return
+  n(E4, 48, 0.5, 0.4),
+  n(G4, 48.5, 0.5, 0.38),
+  n(C5, 49, 1.5, 0.5),
+  n(E5, 50.5, 0.5, 0.42),
+  n(G5, 51, 1, 0.48),
+
+  n(F5, 52, 0.75, 0.46),
+  n(D5, 52.75, 0.25, 0.34),
+  n(C5, 53, 1, 0.42),
+  n(A4, 54, 0.75, 0.38),
+  n(F4, 54.75, 0.25, 0.3),
+  n(A4, 55, 1, 0.4),
+
+  n(G4, 56, 0.5, 0.38),
+  n(B4, 56.5, 0.5, 0.38),
+  n(D5, 57, 1, 0.44),
+  n(F5, 58, 0.75, 0.42),
+  n(E5, 58.75, 0.25, 0.34),
+  n(D5, 59, 1, 0.4),
+
+  n(C5, 60, 1.5, 0.5),
+  n(G4, 61.5, 0.5, 0.36),
+  n(E4, 62, 0.75, 0.4),
+  n(C4, 62.75, 1.25, 0.44),
 ];
 
-export const RECITAL_LOOP: readonly MusicNote[] = [...ACCOMPANIMENT, ...MELODY];
+const MELODY_DOUBLE: readonly MusicNote[] = [
+  n(C4, 1, 1.5, 0.16),
+  n(C5, 1, 1.5, 0.14, "triangle"),
+  n(D5, 5, 1.25, 0.12, "triangle"),
+  n(E4, 10, 1.5, 0.16),
+  n(E5, 10, 1.5, 0.14, "triangle"),
+  n(C4, 17.5, 1.5, 0.14),
+  n(E4, 25, 1.25, 0.16),
+  n(E5, 25, 1.25, 0.14, "triangle"),
+  n(A3, 32, 1, 0.12),
+  n(E4, 34, 1.5, 0.16),
+  n(E5, 34, 1.5, 0.14, "triangle"),
+  n(G4, 41, 1.5, 0.16),
+  n(G5, 41, 1.5, 0.14, "triangle"),
+  n(C4, 49, 1.5, 0.16),
+  n(C5, 49, 1.5, 0.18, "triangle"),
+  n(G4, 51, 1, 0.16),
+  n(C4, 60, 1.5, 0.18),
+  n(C5, 60, 1.5, 0.2, "triangle"),
+  n(E4, 62.75, 1.25, 0.16),
+];
+
+const COUNTER_MELODY: readonly MusicNote[] = [
+  n(G3, 2.5, 0.5, 0.11),
+  n(E3, 3.5, 0.5, 0.1),
+  n(A3, 6.25, 0.5, 0.11),
+  n(F3, 7.5, 0.5, 0.1),
+  n(Bb3, 11.5, 0.5, 0.11),
+  n(G3, 15.5, 0.5, 0.1),
+  n(C4, 19.5, 0.5, 0.11),
+  n(A3, 23.5, 0.5, 0.1),
+  n(D3, 27.5, 0.5, 0.1),
+  n(B3, 31.5, 0.5, 0.1),
+  n(E4, 35.5, 0.5, 0.11),
+  n(C4, 39.5, 0.5, 0.1),
+  n(F4, 43.5, 0.5, 0.11),
+  n(D3, 47.5, 0.5, 0.1),
+  n(G3, 55.5, 0.5, 0.1),
+  n(B3, 59.5, 0.5, 0.1),
+];
+
+export const RECITAL_LOOP: readonly MusicNote[] = [
+  ...ACCOMPANIMENT,
+  ...MELODY_LEAD,
+  ...MELODY_DOUBLE,
+  ...COUNTER_MELODY,
+];
 
 export function secondsPerBeat(bpm: number = MUSIC_BPM): number {
   return 60 / bpm;
