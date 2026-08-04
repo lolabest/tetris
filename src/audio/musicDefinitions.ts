@@ -21,7 +21,6 @@ const C2 = 65.41;
 const F2 = 87.31;
 const G2 = 98.0;
 const A2 = 110.0;
-const C3 = 130.81;
 const D3 = 146.83;
 const Eb3 = 155.56;
 const E3 = 164.81;
