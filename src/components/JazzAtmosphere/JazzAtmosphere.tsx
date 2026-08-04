@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
-import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
-import styles from "./JazzAtmosphere.module.css";
+import { useEffect, useRef } from 'react';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import styles from './JazzAtmosphere.module.css';
 
 interface SmokePuff {
   x: number;
@@ -15,8 +15,7 @@ interface SmokePuff {
 }
 
 /**
- * Full-bleed jazz-lounge backdrop: warm lamp light, mahogany grain hint,
- * and soft rising cigar smoke (Canvas). Decorative only — aria-hidden.
+ * Full-bleed jazz-lounge backdrop with warm lamps and rising cigar smoke.
  */
 export function JazzAtmosphere() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -25,8 +24,7 @@ export function JazzAtmosphere() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     let frameId = 0;
@@ -44,23 +42,23 @@ export function JazzAtmosphere() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
-    const spawn = (fromAshtray: boolean): void => {
+    const spawn = (side: 'left' | 'right'): void => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      // Two ashtray-ish sources: lower-left lounge corner & near piano stage
-      const source = fromAshtray
-        ? { x: w * 0.12 + Math.random() * 40, y: h * 0.78 }
-        : { x: w * 0.82 + Math.random() * 36, y: h * 0.72 };
+      const source =
+        side === 'left'
+          ? { x: w * 0.1 + Math.random() * 50, y: h * 0.82 }
+          : { x: w * 0.82 + Math.random() * 50, y: h * 0.8 };
       puffs.push({
         x: source.x,
         y: source.y,
-        r: 8 + Math.random() * 18,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: -0.25 - Math.random() * 0.45,
+        r: 14 + Math.random() * 28,
+        vx: (Math.random() - 0.45) * 0.35,
+        vy: -0.35 - Math.random() * 0.55,
         life: 0,
-        maxLife: 4200 + Math.random() * 3800,
+        maxLife: 5000 + Math.random() * 4500,
         wobble: Math.random() * Math.PI * 2,
-        wobbleSpeed: 0.008 + Math.random() * 0.012,
+        wobbleSpeed: 0.01 + Math.random() * 0.014,
       });
     };
 
@@ -68,35 +66,22 @@ export function JazzAtmosphere() {
       const w = window.innerWidth;
       const h = window.innerHeight;
       ctx.clearRect(0, 0, w, h);
-      // Soft static haze for reduced motion
-      const haze = ctx.createRadialGradient(
-        w * 0.2,
-        h * 0.75,
-        10,
-        w * 0.2,
-        h * 0.55,
-        w * 0.35,
-      );
-      haze.addColorStop(0, "rgba(180, 170, 150, 0.08)");
-      haze.addColorStop(1, "rgba(180, 170, 150, 0)");
-      ctx.fillStyle = haze;
-      ctx.fillRect(0, 0, w, h);
-      const haze2 = ctx.createRadialGradient(
-        w * 0.85,
-        h * 0.7,
-        10,
-        w * 0.85,
-        h * 0.45,
-        w * 0.3,
-      );
-      haze2.addColorStop(0, "rgba(160, 150, 130, 0.07)");
-      haze2.addColorStop(1, "rgba(160, 150, 130, 0)");
-      ctx.fillStyle = haze2;
-      ctx.fillRect(0, 0, w, h);
+      for (const [x, y] of [
+        [w * 0.12, h * 0.7],
+        [w * 0.88, h * 0.68],
+      ] as const) {
+        const haze = ctx.createRadialGradient(x, y, 8, x, y - h * 0.15, w * 0.28);
+        haze.addColorStop(0, 'rgba(210, 195, 170, 0.22)');
+        haze.addColorStop(0.5, 'rgba(150, 135, 115, 0.1)');
+        haze.addColorStop(1, 'rgba(150, 135, 115, 0)');
+        ctx.fillStyle = haze;
+        ctx.fillRect(0, 0, w, h);
+      }
     };
 
     let lastSpawn = 0;
     let last = performance.now();
+    let sideToggle = false;
 
     const tick = (now: number): void => {
       if (!running) return;
@@ -104,11 +89,11 @@ export function JazzAtmosphere() {
       last = now;
       const w = window.innerWidth;
       const h = window.innerHeight;
-
       ctx.clearRect(0, 0, w, h);
 
-      if (now - lastSpawn > 280 && puffs.length < 48) {
-        spawn(Math.random() > 0.45);
+      if (now - lastSpawn > 180 && puffs.length < 64) {
+        spawn(sideToggle ? 'left' : 'right');
+        sideToggle = !sideToggle;
         lastSpawn = now;
       }
 
@@ -116,27 +101,25 @@ export function JazzAtmosphere() {
         const p = puffs[i]!;
         p.life += dt;
         p.wobble += p.wobbleSpeed * dt;
-        p.x += p.vx * dt + Math.sin(p.wobble) * 0.08 * dt;
+        p.x += p.vx * dt + Math.sin(p.wobble) * 0.12 * dt;
         p.y += p.vy * dt;
-        p.r += 0.012 * dt;
-        p.vy *= 0.999;
+        p.r += 0.018 * dt;
+        p.vy *= 0.9992;
 
         const t = p.life / p.maxLife;
-        if (t >= 1 || p.y < -80) {
+        if (t >= 1 || p.y < -100) {
           puffs.splice(i, 1);
           continue;
         }
 
-        // Fade in, linger, fade out — warm grey cigar smoke
-        const alpha =
-          t < 0.15 ? t / 0.15 : t > 0.55 ? 1 - (t - 0.55) / 0.45 : 1;
+        const alpha = t < 0.12 ? t / 0.12 : t > 0.5 ? 1 - (t - 0.5) / 0.5 : 1;
         const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-        gradient.addColorStop(0, `rgba(210, 200, 180, ${0.14 * alpha})`);
-        gradient.addColorStop(0.45, `rgba(140, 130, 115, ${0.08 * alpha})`);
-        gradient.addColorStop(1, `rgba(80, 70, 55, 0)`);
+        gradient.addColorStop(0, `rgba(225, 210, 185, ${0.28 * alpha})`);
+        gradient.addColorStop(0.4, `rgba(160, 145, 125, ${0.16 * alpha})`);
+        gradient.addColorStop(1, `rgba(70, 55, 40, 0)`);
         ctx.fillStyle = gradient;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.ellipse(p.x, p.y, p.r * 1.15, p.r * 0.85, p.wobble * 0.2, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -144,45 +127,52 @@ export function JazzAtmosphere() {
     };
 
     resize();
-    window.addEventListener("resize", resize);
+    window.addEventListener('resize', resize);
 
     if (reducedMotion) {
       paintStatic();
       return () => {
         running = false;
-        window.removeEventListener("resize", resize);
+        window.removeEventListener('resize', resize);
       };
     }
 
-    // Seed a few puffs
-    for (let i = 0; i < 10; i += 1) {
-      spawn(i % 2 === 0);
+    for (let i = 0; i < 16; i += 1) {
+      spawn(i % 2 === 0 ? 'left' : 'right');
       const p = puffs[puffs.length - 1];
       if (p) {
-        p.life = Math.random() * p.maxLife * 0.5;
-        p.y -= Math.random() * 120;
+        p.life = Math.random() * p.maxLife * 0.55;
+        p.y -= Math.random() * 180;
+        p.r += Math.random() * 20;
       }
     }
 
     frameId = requestAnimationFrame(tick);
-
     return () => {
       running = false;
       cancelAnimationFrame(frameId);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener('resize', resize);
     };
   }, [reducedMotion]);
 
   return (
-    <div className={styles.root} aria-hidden="true">
+    <div className={styles.root} data-testid="jazz-atmosphere" aria-hidden="true">
       <div className={styles.wood} />
+      <div className={styles.curtain} />
       <div className={styles.lampLeft} />
       <div className={styles.lampRight} />
       <div className={styles.stageGlow} />
-      <div className={styles.vignette} />
+      <div className={styles.floor} />
       <canvas ref={canvasRef} className={styles.smoke} />
-      <div className={styles.ashtray} data-side="left" />
-      <div className={styles.ashtray} data-side="right" />
+      <div className={styles.ashtray} data-side="left">
+        <span className={styles.cigar} />
+        <span className={styles.ember} />
+      </div>
+      <div className={styles.ashtray} data-side="right">
+        <span className={styles.cigar} />
+        <span className={styles.ember} />
+      </div>
+      <div className={styles.vignette} />
       <div className={styles.grain} />
     </div>
   );

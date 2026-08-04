@@ -358,9 +358,9 @@ export function App() {
   }, [screen, draw]);
 
   return (
-    <div className={styles.app}>
+    <>
       <JazzAtmosphere />
-      <div className={styles.foreground}>
+      <div className={styles.app}>
         <GameHeader
           muted={muted}
           volume={volume}
@@ -448,9 +448,9 @@ export function App() {
                 disabled={ui.phase === "paused" || ui.phase === "gameover"}
               />
             </div>
-          </main>
-        )}
+        </main>
+      )}
       </div>
-    </div>
+    </>
   );
 }
