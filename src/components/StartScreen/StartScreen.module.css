@@ -1,54 +1,56 @@
 .screen {
-  display: grid;
-  place-items: end center;
-  min-height: calc(100dvh - 2rem);
-  width: min(920px, 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* Leave most of the viewport open so the piano boy scene stays visible */
+  min-height: calc(100dvh - 4.5rem);
+  width: 100%;
   margin: 0 auto;
-  padding-bottom: 1rem;
+  padding: 0 1rem 1.25rem;
   animation: fadeIn calc(0.6s * var(--pb-motion, 1)) ease both;
 }
 
 .content {
-  width: min(100%, 34rem);
-  padding: 1.75rem 1.35rem 1.4rem;
+  width: min(100%, 18.5rem);
+  padding: 0.9rem 1rem 0.95rem;
   text-align: center;
   background: linear-gradient(
     180deg,
-    rgba(12, 8, 5, 0.35),
-    rgba(8, 5, 3, 0.78) 40%,
-    rgba(6, 4, 2, 0.88)
+    rgba(12, 8, 5, 0.28),
+    rgba(8, 5, 3, 0.62) 55%,
+    rgba(6, 4, 2, 0.72)
   );
-  border-radius: 14px;
-  border: 1px solid rgba(212, 168, 75, 0.22);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  border: 1px solid rgba(212, 168, 75, 0.2);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
 }
 
 .eyebrow {
   margin: 0;
-  font-size: 0.8rem;
-  letter-spacing: 0.2em;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--pb-gold-soft);
 }
 
 .title {
-  margin: 0.4rem 0 0.75rem;
+  margin: 0.25rem 0 0.4rem;
   font-family: var(--pb-font-display);
-  font-size: clamp(2.8rem, 8vw, 4.5rem);
+  font-size: clamp(1.85rem, 5vw, 2.35rem);
   font-weight: 600;
   letter-spacing: 0.03em;
   line-height: 1;
   color: var(--pb-ivory);
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
 }
 
 .tagline {
-  margin: 0 auto 1.75rem;
-  max-width: 28rem;
+  margin: 0 auto 0.85rem;
+  max-width: 16rem;
   color: var(--pb-ivory-dim);
-  font-size: 1.05rem;
-  line-height: 1.5;
+  font-size: 0.82rem;
+  line-height: 1.35;
 }
 
 .cta {
@@ -61,16 +63,16 @@
   );
   color: var(--pb-ivory);
   font-family: var(--pb-font-display);
-  font-size: 1.25rem;
-  letter-spacing: 0.06em;
-  padding: 0.85rem 2.2rem;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  padding: 0.55rem 1.35rem;
   border-radius: 999px;
   cursor: pointer;
   transition:
     transform 0.2s ease,
     background 0.2s ease,
     box-shadow 0.2s ease;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 
 .cta:hover {
@@ -79,53 +81,13 @@
     rgba(201, 162, 39, 0.4),
     rgba(201, 162, 39, 0.12)
   );
-  transform: translateY(calc(-2px * var(--pb-motion, 1)));
+  transform: translateY(calc(-1px * var(--pb-motion, 1)));
 }
 
 .best {
-  margin: 1rem 0 0;
+  margin: 0.55rem 0 0;
   color: var(--pb-muted);
-  font-size: 0.9rem;
-}
-
-.guide {
-  margin: 1.75rem auto 0;
-  max-width: 26rem;
-  text-align: left;
-  border-top: 1px solid var(--pb-border-soft);
-  padding-top: 1.1rem;
-}
-
-.guideTitle {
-  margin: 0 0 0.75rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--pb-muted);
-}
-
-.list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 0.5rem;
-  color: var(--pb-ivory-dim);
-  font-size: 0.92rem;
-}
-
-.list kbd {
-  display: inline-block;
-  min-width: 1.4rem;
-  padding: 0.1rem 0.35rem;
-  margin-right: 0.15rem;
-  border: 1px solid var(--pb-border);
-  border-radius: 4px;
-  background: var(--pb-bg-panel);
-  font-family: var(--pb-font-body);
-  font-size: 0.8rem;
-  text-align: center;
-  color: var(--pb-ivory);
+  font-size: 0.75rem;
 }
 
 @keyframes fadeIn {
