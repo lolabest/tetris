@@ -9,12 +9,13 @@ export function StartScreen({ highScore, onStart }: StartScreenProps) {
   return (
     <section className={styles.screen} aria-labelledby="start-title">
       <div className={styles.content}>
-        <p className={styles.eyebrow}>Old jazz · late ivory</p>
+        <p className={styles.eyebrow}>Every block plays a note.</p>
         <h1 id="start-title" className={styles.title}>
           Piano Blocks
         </h1>
         <p className={styles.tagline}>
-          A smoky lounge recital under amber light.
+          Turn falling piano keys into rhythm, clear the stage, and keep the
+          melody alive.
         </p>
         <button
           type="button"
