@@ -1,0 +1,26 @@
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem 1rem;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.label {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pb-muted);
+}
+
+.value {
+  font-family: var(--pb-font-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--pb-ivory);
+  line-height: 1.1;
+}

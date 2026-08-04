@@ -1,0 +1,109 @@
+.app {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  padding: 0.75rem 1rem 1.5rem;
+  min-height: 100%;
+}
+
+.game {
+  display: grid;
+  grid-template-columns: minmax(7.5rem, 11rem) minmax(0, 1fr) minmax(
+      7.5rem,
+      11rem
+    );
+  grid-template-areas:
+    "hold stage next"
+    "stats stage next";
+  gap: 1rem;
+  align-items: start;
+  position: relative;
+}
+
+.holdSlot {
+  grid-area: hold;
+}
+
+.statsSlot {
+  grid-area: stats;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.nextSlot {
+  grid-area: next;
+}
+
+.stage {
+  grid-area: stage;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.guide {
+  font-size: 0.75rem;
+  color: var(--pb-muted);
+  line-height: 1.55;
+}
+
+.guide p {
+  margin: 0 0 0.35rem;
+}
+
+.guide kbd {
+  display: inline-block;
+  padding: 0.05rem 0.3rem;
+  border: 1px solid var(--pb-border);
+  border-radius: 3px;
+  background: var(--pb-bg-panel);
+  color: var(--pb-ivory-dim);
+  font-size: 0.7rem;
+}
+
+.touch {
+  display: none;
+  grid-column: 1 / -1;
+}
+
+.levelFlash {
+  animation: glow calc(0.7s * var(--pb-motion, 1)) ease;
+}
+
+@keyframes glow {
+  0% {
+    filter: brightness(1);
+  }
+  35% {
+    filter: brightness(1.12);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+@media (max-width: 720px) {
+  .game {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "hold next"
+      "stage stage"
+      "stats stats"
+      "touch touch";
+  }
+
+  .guide {
+    display: none;
+  }
+
+  .touch {
+    display: block;
+    grid-area: touch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .levelFlash {
+    animation: none;
+  }
+}

@@ -1,0 +1,56 @@
+@import "./theme.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--pb-font-body);
+  color: var(--pb-ivory);
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% -20%,
+      rgba(201, 162, 39, 0.12),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 80% 50% at 100% 100%,
+      rgba(243, 234, 216, 0.04),
+      transparent 50%
+    ),
+    linear-gradient(165deg, #161410 0%, var(--pb-bg-deep) 45%, #100e0c 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--pb-focus);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: rgba(201, 162, 39, 0.35);
+  color: var(--pb-ivory);
+}
+
+a {
+  color: var(--pb-gold);
+}

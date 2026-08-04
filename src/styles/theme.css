@@ -1,0 +1,48 @@
+:root {
+  /* Piano palette — charcoal, ivory, gold */
+  --pb-bg-deep: #0c0b0a;
+  --pb-bg: #141210;
+  --pb-bg-elevated: #1c1a17;
+  --pb-bg-panel: #221f1b;
+  --pb-border: #3a342c;
+  --pb-border-soft: #2a261f;
+  --pb-ivory: #f3ead8;
+  --pb-ivory-dim: #c9bfa8;
+  --pb-charcoal: #1a1814;
+  --pb-black-key: #0a0908;
+  --pb-gold: #c9a227;
+  --pb-gold-soft: #a6862a;
+  --pb-gold-glow: rgba(201, 162, 39, 0.35);
+  --pb-muted: #8a8070;
+  --pb-danger: #b85c4a;
+  --pb-success: #7a9a6d;
+  --pb-focus: #e0c56a;
+
+  --pb-font-display: "Cormorant Garamond", "Palatino Linotype", Palatino, serif;
+  --pb-font-body: "Source Sans 3", "Segoe UI", sans-serif;
+
+  --pb-radius: 6px;
+  --pb-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  --pb-shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.35);
+
+  --pb-piece-ivory: #e8dcc4;
+  --pb-piece-gold: #d4af37;
+  --pb-piece-pearl: #d9cfc0;
+  --pb-piece-sage: #8fa382;
+  --pb-piece-rosewood: #9a6b5a;
+  --pb-piece-slate: #7a8494;
+  --pb-piece-amber: #c4924a;
+
+  --pb-ghost-alpha: 0.28;
+  --pb-cell-gap: 1.5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --pb-motion: 0;
+  }
+}
+
+:root {
+  --pb-motion: 1;
+}

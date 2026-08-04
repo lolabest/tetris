@@ -1,0 +1,47 @@
+.root {
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.btn {
+  flex: 1;
+  max-width: 5.5rem;
+  min-height: 2.75rem;
+  border: 1px solid var(--pb-border);
+  border-radius: var(--pb-radius);
+  background: var(--pb-bg-panel);
+  color: var(--pb-ivory);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn:active:not(:disabled) {
+  background: var(--pb-bg-elevated);
+  border-color: var(--pb-gold-soft);
+}
+
+.primary {
+  border-color: var(--pb-gold-soft);
+  color: var(--pb-gold);
+}
+
+@media (max-width: 720px) {
+  .root {
+    display: flex;
+  }
+}
