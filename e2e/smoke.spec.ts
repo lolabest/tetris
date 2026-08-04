@@ -6,8 +6,9 @@ test("starts a session, shows board and stats, pauses and resumes", async ({
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", { name: "Piano Blocks" }),
+    page.getByRole("heading", { name: "Piano Blocks" }).first(),
   ).toBeVisible();
+  await expect(page.getByTestId("start-button")).toBeVisible();
   await page.getByTestId("start-button").click();
 
   await expect(page.getByTestId("game-board")).toBeVisible();
