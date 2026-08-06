@@ -4,6 +4,7 @@ interface StartScreenProps {
   readonly highScore: number;
   readonly onStart: () => void;
   readonly onOpenAchievements: () => void;
+  readonly onOpenCheats: () => void;
   readonly highestLevel: number;
 }
 
@@ -11,6 +12,7 @@ export function StartScreen({
   highScore,
   onStart,
   onOpenAchievements,
+  onOpenCheats,
   highestLevel,
 }: StartScreenProps) {
   return (
@@ -40,6 +42,14 @@ export function StartScreen({
         >
           Achievements
           {highestLevel > 0 ? ` · Lv ${highestLevel}` : ""}
+        </button>
+        <button
+          type="button"
+          className={styles.secondary}
+          onClick={onOpenCheats}
+          data-testid="cheats-button"
+        >
+          Cheats
         </button>
         <p className={styles.best}>
           Best · {highScore.toLocaleString("en-US")}

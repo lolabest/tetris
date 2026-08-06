@@ -389,4 +389,22 @@ describe("localStorage adapters", () => {
     const again = unlockLevelAchievements(4);
     expect(again.newlyUnlocked).toHaveLength(0);
   });
+
+  it("supports cheat level jump and board clear", () => {
+    const engine = createGameEngine({
+      random: createSeededRandom(7),
+      now: () => 0,
+    });
+    engine.start();
+    const leveled = engine.cheatSetLevel(5);
+    expect(leveled.level).toBe(5);
+    expect(leveled.lines).toBe(40);
+    expect(leveled.lastEvents.some((e) => e.type === "levelUp")).toBe(true);
+
+    const cleared = engine.cheatClearBoard();
+    expect(
+      cleared.board.every((row) => row.every((cell) => cell === null)),
+    ).toBe(true);
+    expect(cleared.active).not.toBeNull();
+  });
 });

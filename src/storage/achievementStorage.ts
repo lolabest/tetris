@@ -93,3 +93,8 @@ export function isAchievementUnlocked(
 ): boolean {
   return progress.unlockedIds.includes(id);
 }
+
+/** Cheat / debug: wipe saved achievement progress. */
+export function resetAchievementProgress(): AchievementProgress {
+  return saveProgress({ ...defaultProgress });
+}

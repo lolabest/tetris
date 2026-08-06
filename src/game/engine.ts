@@ -606,6 +606,92 @@ export class GameEngine {
     this.engine.state = spawnPiece(this.engine, []);
     return this.engine.state;
   }
+
+  /** Cheat: jump to a level (adjusts lines + drop speed). */
+  cheatSetLevel(level: number): GameState {
+    const { engine } = this;
+    if (engine.state.phase !== "playing" && engine.state.phase !== "paused") {
+      return withEvents(engine.state, []);
+    }
+    const nextLevel = Math.max(1, Math.min(99, Math.floor(level)));
+    const previousLevel = engine.state.level;
+    const lines = (nextLevel - 1) * engine.config.linesPerLevel;
+    const events: GameEvent[] = [];
+    if (nextLevel > previousLevel) {
+      events.push({ type: "levelUp", level: nextLevel });
+    }
+    engine.state = updateGhost(
+      withEvents(
+        {
+          ...engine.state,
+          level: nextLevel,
+          lines,
+          dropIntervalMs: dropIntervalForLevel(nextLevel, engine.config),
+          score:
+            engine.state.score + Math.max(0, nextLevel - previousLevel) * 500,
+        },
+        events,
+      ),
+    );
+    return engine.state;
+  }
+
+  /** Cheat: advance one level. */
+  cheatLevelUp(): GameState {
+    return this.cheatSetLevel(this.engine.state.level + 1);
+  }
+
+  /** Cheat: wipe locked cells; keep the active piece if it still fits. */
+  cheatClearBoard(): GameState {
+    const { engine } = this;
+    if (engine.state.phase !== "playing" && engine.state.phase !== "paused") {
+      return withEvents(engine.state, []);
+    }
+    const board = createEmptyBoard(
+      engine.config.boardWidth,
+      engine.config.boardHeight,
+    );
+    let active = engine.state.active;
+    if (active && !canPlace(board, active)) {
+      active = null;
+    }
+    engine.dropAccumulatorMs = 0;
+    engine.lockTimerMs = 0;
+    engine.state = updateGhost(
+      withEvents(
+        {
+          ...engine.state,
+          board,
+          active,
+          clearing: null,
+          canHold: true,
+        },
+        [],
+      ),
+    );
+    if (!engine.state.active && engine.state.phase === "playing") {
+      engine.state = spawnPiece(engine, []);
+    }
+    return engine.state;
+  }
+
+  /** Cheat: add points. */
+  cheatAddScore(amount: number): GameState {
+    const { engine } = this;
+    if (engine.state.phase === "idle") {
+      return withEvents(engine.state, []);
+    }
+    const add = Math.max(0, Math.floor(amount));
+    engine.state = withEvents(
+      {
+        ...engine.state,
+        score: engine.state.score + add,
+        highScore: Math.max(engine.state.highScore, engine.state.score + add),
+      },
+      [],
+    );
+    return engine.state;
+  }
 }
 
 /** Factory used by tests and the React host. */

@@ -18,10 +18,17 @@ import { NextPiece } from "../components/NextPiece/NextPiece";
 import { PauseOverlay } from "../components/PauseOverlay/PauseOverlay";
 import { AchievementsPanel } from "../components/AchievementsPanel/AchievementsPanel";
 import { AchievementToast } from "../components/AchievementToast/AchievementToast";
+import {
+  CheatsPanel,
+  type CheatAction,
+} from "../components/CheatsPanel/CheatsPanel";
 import { StageMuse } from "../components/StageMuse/StageMuse";
 import { StartScreen } from "../components/StartScreen/StartScreen";
 import { TouchControls } from "../components/TouchControls/TouchControls";
-import type { LevelAchievement } from "../achievements/levelAchievements";
+import {
+  MAX_MUSE_LEVEL,
+  type LevelAchievement,
+} from "../achievements/levelAchievements";
 import { createGameEngine, type GameEngine } from "../game/engine";
 import type { GameEvent, GameState, InputAction } from "../game/types";
 import { useGameLoop } from "../hooks/useGameLoop";
@@ -30,6 +37,7 @@ import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { useTouchControls } from "../hooks/useTouchControls";
 import {
   loadAchievementProgress,
+  resetAchievementProgress,
   unlockLevelAchievements,
   type AchievementProgress,
 } from "../storage/achievementStorage";
@@ -110,6 +118,7 @@ export function App() {
   const [achievementProgress, setAchievementProgress] =
     useState<AchievementProgress>(() => loadAchievementProgress());
   const [showAchievements, setShowAchievements] = useState(false);
+  const [showCheats, setShowCheats] = useState(false);
   const [toast, setToast] = useState<LevelAchievement | null>(null);
   const [museCelebrate, setMuseCelebrate] = useState(false);
   const toastTimerRef = useRef<number | null>(null);
@@ -199,6 +208,26 @@ export function App() {
         window.clearTimeout(toastTimerRef.current);
       }
     };
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === "`" || event.key === "F2") {
+        const target = event.target;
+        if (
+          target instanceof HTMLElement &&
+          (target.tagName === "INPUT" ||
+            target.tagName === "TEXTAREA" ||
+            target.isContentEditable)
+        ) {
+          return;
+        }
+        event.preventDefault();
+        setShowCheats((open) => !open);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
   const handleEvents = useCallback(
@@ -301,6 +330,53 @@ export function App() {
     await audioRef.current?.unlock();
   }, []);
 
+  const runCheat = useCallback(
+    (action: CheatAction) => {
+      const engine = engineRef.current;
+      void ensureAudio();
+      audioRef.current?.play("ui");
+
+      switch (action.type) {
+        case "levelUp": {
+          if (!engine || screen !== "playing") return;
+          commitState(engine.cheatLevelUp());
+          break;
+        }
+        case "setLevel": {
+          if (!engine || screen !== "playing") return;
+          commitState(engine.cheatSetLevel(action.level));
+          break;
+        }
+        case "clearBoard": {
+          if (!engine || screen !== "playing") return;
+          commitState(engine.cheatClearBoard());
+          break;
+        }
+        case "addScore": {
+          if (!engine || screen !== "playing") return;
+          commitState(engine.cheatAddScore(action.amount));
+          break;
+        }
+        case "unlockAll": {
+          applyLevelAchievements(MAX_MUSE_LEVEL);
+          if (engine && screen === "playing") {
+            commitState(engine.cheatSetLevel(MAX_MUSE_LEVEL));
+          }
+          break;
+        }
+        case "resetAchievements": {
+          setAchievementProgress(resetAchievementProgress());
+          setToast(null);
+          setMuseCelebrate(false);
+          break;
+        }
+        default:
+          break;
+      }
+    },
+    [applyLevelAchievements, commitState, ensureAudio, screen],
+  );
+
   const startGame = useCallback(async () => {
     await ensureAudio();
     audioRef.current?.play("ui");
@@ -371,7 +447,11 @@ export function App() {
   }, []);
 
   useKeyboardControls({
-    enabled: screen === "playing" && ui.phase !== "gameover",
+    enabled:
+      screen === "playing" &&
+      ui.phase !== "gameover" &&
+      !showCheats &&
+      !showAchievements,
     onAction,
     onSoftDropChange,
   });
@@ -461,6 +541,7 @@ export function App() {
             highScore={ui.highScore}
             onStart={() => void startGame()}
             onOpenAchievements={() => setShowAchievements(true)}
+            onOpenCheats={() => setShowCheats(true)}
             highestLevel={achievementProgress.highestLevel}
           />
         ) : (
@@ -539,6 +620,14 @@ export function App() {
         <AchievementsPanel
           progress={achievementProgress}
           onClose={() => setShowAchievements(false)}
+        />
+      ) : null}
+      {showCheats ? (
+        <CheatsPanel
+          currentLevel={ui.level}
+          playing={screen === "playing"}
+          onCheat={runCheat}
+          onClose={() => setShowCheats(false)}
         />
       ) : null}
       {toast ? <AchievementToast achievement={toast} /> : null}
