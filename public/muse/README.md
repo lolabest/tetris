@@ -1,16 +1,17 @@
-# Miss Melody level sprites
+# Miss Melody — theatrical pin-up progression
 
-10-level clothing progression. Same adult woman, locked pose.
+10-level vintage cabaret / pin-up wardrobe ladder.
+Same adult woman, locked pose. Transparent PNG sprites 1536×2304.
 
-Transparent PNG sprites at 1536×2304.
+Premium theatrical pin-up and burlesque costumes, not everyday clothing.
 
-1. Jacket, top, trousers, heels
-2. Jacket removed
-3. Accessories simplified
-4. Top & trousers
-5. Lighter fitted top
-6. Barefoot, outer layer off
-7. Camisole & shorts
-8. Sleepwear set
-9. Coordinated lingerie-style set
-10. Elegant opaque lingerie look
+1. Velvet jacket, pencil skirt, gloves, fascinator
+2. Jacket off — satin top & gloves
+3. Gloves & fascinator off
+4. Black velvet stage look
+5. Crimson satin skirt
+6. Gold satin cabaret
+7. Ruby satin gown
+8. Black velvet & crimson
+9. Ivory lace satin
+10. Black velvet finale
