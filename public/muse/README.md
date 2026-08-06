@@ -1,5 +1,16 @@
-# Miss Melody stage portraits
+# Miss Melody level sprites
 
-High-resolution (1536×2304) outfit stages unlocked by level achievements.
+10-level clothing progression. Same adult woman, locked pose.
 
-These are fictional fashion portraits for the Piano Blocks stage muse.
+Transparent PNG sprites at 1536×2304.
+
+1. Jacket, top, trousers, heels
+2. Jacket removed
+3. Accessories simplified
+4. Top & trousers
+5. Lighter fitted top
+6. Barefoot, outer layer off
+7. Camisole & shorts
+8. Sleepwear set
+9. Coordinated lingerie-style set
+10. Elegant opaque lingerie look

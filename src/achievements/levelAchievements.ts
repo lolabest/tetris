@@ -6,93 +6,93 @@ export interface LevelAchievement {
   readonly title: string;
   readonly description: string;
   readonly outfitLabel: string;
-  /** High-resolution portrait under /muse/ */
+  /** High-resolution portrait under /muse/ (transparent PNG sprites). */
   readonly imageSrc: string;
 }
 
 /**
- * One achievement per level. Reaching the level unlocks the reward and
- * advances Miss Melody's hi-res stage wardrobe.
+ * One achievement per level. Same locked pose; clothing only changes.
+ * Sprites: public/muse/stage-XX.png
  */
 export const LEVEL_ACHIEVEMENTS: readonly LevelAchievement[] = [
   {
     level: 1,
     id: "level-1",
-    title: "First Ivory",
-    description: "Open the recital at level 1.",
-    outfitLabel: "Ivory gown & fur",
+    title: "Fully Dressed",
+    description: "Jacket, top, trousers, and heels.",
+    outfitLabel: "Jacket & trousers",
     imageSrc: "/muse/stage-01.png",
   },
   {
     level: 2,
     id: "level-2",
-    title: "Warm Spotlight",
-    description: "Reach level 2 — the stole comes off.",
-    outfitLabel: "Ivory evening gown",
+    title: "Jacket Off",
+    description: "Reach level 2 — jacket removed.",
+    outfitLabel: "Blouse & trousers",
     imageSrc: "/muse/stage-02.png",
   },
   {
     level: 3,
     id: "level-3",
-    title: "Satin Hands",
-    description: "Reach level 3 — gloves slip away.",
-    outfitLabel: "Gown, bare hands",
+    title: "Simplified",
+    description: "Reach level 3 — accessories cleared.",
+    outfitLabel: "Clean blouse look",
     imageSrc: "/muse/stage-03.png",
   },
   {
     level: 4,
     id: "level-4",
-    title: "Cocktail Hour",
-    description: "Reach level 4 — the gown becomes a cocktail dress.",
-    outfitLabel: "Cream cocktail dress",
+    title: "Top & Trousers",
+    description: "Reach level 4 — top and trousers.",
+    outfitLabel: "Top & trousers",
     imageSrc: "/muse/stage-04.png",
   },
   {
     level: 5,
     id: "level-5",
-    title: "Strapless Glow",
-    description: "Reach level 5 — shoulders bare under the lights.",
-    outfitLabel: "Strapless satin dress",
+    title: "Lighter Layer",
+    description: "Reach level 5 — lighter fitted top.",
+    outfitLabel: "Light top & trousers",
     imageSrc: "/muse/stage-05.png",
   },
   {
     level: 6,
     id: "level-6",
-    title: "Silk Slip",
-    description: "Reach level 6 — dress gives way to a silk slip.",
-    outfitLabel: "Blush silk slip",
+    title: "Barefoot",
+    description: "Reach level 6 — shoes and outer layer gone.",
+    outfitLabel: "Top, trousers, barefoot",
     imageSrc: "/muse/stage-06.png",
   },
   {
     level: 7,
     id: "level-7",
-    title: "Robe Interlude",
-    description: "Reach level 7 — silk robe between sets.",
-    outfitLabel: "Ivory silk robe",
+    title: "Camisole & Shorts",
+    description: "Reach level 7 — camisole and shorts.",
+    outfitLabel: "Camisole & shorts",
     imageSrc: "/muse/stage-07.png",
   },
   {
     level: 8,
     id: "level-8",
-    title: "Sequin Motif",
-    description: "Reach level 8 — champagne sequins catch the light.",
-    outfitLabel: "Champagne sequin dress",
+    title: "Sleepwear",
+    description: "Reach level 8 — soft sleepwear set.",
+    outfitLabel: "Sleepwear set",
     imageSrc: "/muse/stage-08.png",
   },
   {
     level: 9,
     id: "level-9",
-    title: "Closer Spotlight",
-    description: "Reach level 9 — the spotlight pulls in tight.",
-    outfitLabel: "Spotlight encore dress",
+    title: "Partial Lace",
+    description: "Reach level 9 — coordinated partial coverage.",
+    outfitLabel: "Coordinated lingerie set",
     imageSrc: "/muse/stage-09.png",
   },
   {
     level: 10,
     id: "level-10",
-    title: "Final Fair",
-    description: "Reach level 10 — cashmere wrap for the final bow.",
-    outfitLabel: "Fair wrap encore",
+    title: "Lace Finale",
+    description: "Reach level 10 — elegant opaque lingerie.",
+    outfitLabel: "Elegant lingerie",
     imageSrc: "/muse/stage-10.png",
   },
 ] as const;

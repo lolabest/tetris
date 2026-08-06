@@ -25,7 +25,8 @@ export function StageMuse({
 }: StageMuseProps) {
   const stage = outfitStageForLevel(Math.max(1, level || 1));
   const achievement = achievementForLevel(stage);
-  const src = museImageForLevel(stage);
+  // Cache-bust when sprite pack updates
+  const src = `${museImageForLevel(stage)}?v=pose-lock-1`;
 
   return (
     <figure
