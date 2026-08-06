@@ -29,6 +29,14 @@ import {
   loadSettings,
   saveSettings,
 } from "../storage/settingsStorage";
+import {
+  loadAchievementProgress,
+  unlockLevelAchievements,
+} from "../storage/achievementStorage";
+import {
+  LEVEL_ACHIEVEMENTS,
+  outfitStageForLevel,
+} from "../achievements/levelAchievements";
 
 function piece(
   type: TetrominoType,
@@ -359,5 +367,26 @@ describe("localStorage adapters", () => {
     expect(getHighScore()).toBe(0);
     localStorage.setItem("piano-blocks:settings", "{");
     expect(loadSettings()).toEqual(defaultSettings);
+  });
+
+  it("unlocks one achievement per level and advances muse outfit", () => {
+    expect(loadAchievementProgress().highestLevel).toBe(0);
+    const first = unlockLevelAchievements(1);
+    expect(first.newlyUnlocked.map((a) => a.id)).toEqual(["level-1"]);
+    expect(first.progress.highestLevel).toBe(1);
+    expect(outfitStageForLevel(1)).toBe(1);
+
+    const jump = unlockLevelAchievements(4);
+    expect(jump.newlyUnlocked.map((a) => a.id)).toEqual([
+      "level-2",
+      "level-3",
+      "level-4",
+    ]);
+    expect(jump.progress.highestLevel).toBe(4);
+    expect(outfitStageForLevel(4)).toBe(4);
+    expect(LEVEL_ACHIEVEMENTS).toHaveLength(10);
+
+    const again = unlockLevelAchievements(4);
+    expect(again.newlyUnlocked).toHaveLength(0);
   });
 });

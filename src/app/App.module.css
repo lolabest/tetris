@@ -24,6 +24,33 @@
 .holdSlot {
   grid-area: hold;
   margin-top: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.museSlot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.achievementsLink {
+  appearance: none;
+  border: 1px solid rgba(212, 168, 75, 0.3);
+  background: rgba(12, 10, 8, 0.65);
+  color: var(--pb-ivory-dim);
+  border-radius: var(--pb-radius);
+  padding: 0.35rem 0.55rem;
+  cursor: pointer;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.achievementsLink:hover {
+  color: var(--pb-cream);
+  border-color: var(--pb-gold-soft);
 }
 
 .rightRail {

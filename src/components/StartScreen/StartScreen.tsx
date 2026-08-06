@@ -3,9 +3,16 @@ import styles from "./StartScreen.module.css";
 interface StartScreenProps {
   readonly highScore: number;
   readonly onStart: () => void;
+  readonly onOpenAchievements: () => void;
+  readonly highestLevel: number;
 }
 
-export function StartScreen({ highScore, onStart }: StartScreenProps) {
+export function StartScreen({
+  highScore,
+  onStart,
+  onOpenAchievements,
+  highestLevel,
+}: StartScreenProps) {
   return (
     <section className={styles.screen} aria-labelledby="start-title">
       <div className={styles.content}>
@@ -24,6 +31,15 @@ export function StartScreen({ highScore, onStart }: StartScreenProps) {
           data-testid="start-button"
         >
           Begin recital
+        </button>
+        <button
+          type="button"
+          className={styles.secondary}
+          onClick={onOpenAchievements}
+          data-testid="achievements-button"
+        >
+          Achievements
+          {highestLevel > 0 ? ` · Lv ${highestLevel}` : ""}
         </button>
         <p className={styles.best}>
           Best · {highScore.toLocaleString("en-US")}

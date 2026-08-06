@@ -1,0 +1,94 @@
+.root {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.frame {
+  width: 100%;
+  aspect-ratio: 160 / 280;
+  max-height: 18rem;
+  border-radius: 2px;
+  border: 1px solid rgba(212, 168, 75, 0.35);
+  background:
+    radial-gradient(
+      ellipse at 50% 20%,
+      rgba(255, 220, 140, 0.16),
+      transparent 55%
+    ),
+    linear-gradient(180deg, rgba(28, 22, 18, 0.95), rgba(8, 6, 5, 0.98));
+  box-shadow:
+    var(--pb-shadow-soft),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+.compact .frame {
+  max-height: 14rem;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.layer {
+  transition: opacity calc(0.45s * var(--pb-motion, 1)) ease;
+}
+
+.caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  text-align: center;
+  width: 100%;
+}
+
+.name {
+  font-family: var(--pb-font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: var(--pb-gold);
+}
+
+.outfit {
+  font-size: 0.72rem;
+  color: var(--pb-ivory-dim);
+}
+
+.level {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pb-muted);
+}
+
+.celebrate .frame {
+  animation: museGlow calc(1.1s * var(--pb-motion, 1)) ease;
+}
+
+@keyframes museGlow {
+  0%,
+  100% {
+    box-shadow:
+      var(--pb-shadow-soft),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  }
+  40% {
+    box-shadow:
+      0 0 28px rgba(212, 168, 75, 0.45),
+      inset 0 0 0 1px rgba(255, 236, 180, 0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celebrate .frame,
+  .layer {
+    animation: none;
+    transition: none;
+  }
+}

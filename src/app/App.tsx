@@ -16,14 +16,23 @@ import { HoldPiece } from "../components/HoldPiece/HoldPiece";
 import { JazzAtmosphere } from "../components/JazzAtmosphere/JazzAtmosphere";
 import { NextPiece } from "../components/NextPiece/NextPiece";
 import { PauseOverlay } from "../components/PauseOverlay/PauseOverlay";
+import { AchievementsPanel } from "../components/AchievementsPanel/AchievementsPanel";
+import { AchievementToast } from "../components/AchievementToast/AchievementToast";
+import { StageMuse } from "../components/StageMuse/StageMuse";
 import { StartScreen } from "../components/StartScreen/StartScreen";
 import { TouchControls } from "../components/TouchControls/TouchControls";
+import type { LevelAchievement } from "../achievements/levelAchievements";
 import { createGameEngine, type GameEngine } from "../game/engine";
 import type { GameEvent, GameState, InputAction } from "../game/types";
 import { useGameLoop } from "../hooks/useGameLoop";
 import { useKeyboardControls } from "../hooks/useKeyboardControls";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { useTouchControls } from "../hooks/useTouchControls";
+import {
+  loadAchievementProgress,
+  unlockLevelAchievements,
+  type AchievementProgress,
+} from "../storage/achievementStorage";
 import { getHighScore, saveHighScore } from "../storage/highScoreStorage";
 import {
   loadSettings,
@@ -98,6 +107,12 @@ export function App() {
   }));
   const [settings, setSettings] = useState<UserSettings>(() => loadSettings());
   const [levelFlash, setLevelFlash] = useState(false);
+  const [achievementProgress, setAchievementProgress] =
+    useState<AchievementProgress>(() => loadAchievementProgress());
+  const [showAchievements, setShowAchievements] = useState(false);
+  const [toast, setToast] = useState<LevelAchievement | null>(null);
+  const [museCelebrate, setMuseCelebrate] = useState(false);
+  const toastTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     engineRef.current = createGameEngine({
@@ -156,6 +171,36 @@ export function App() {
     });
   }, []);
 
+  const applyLevelAchievements = useCallback((level: number) => {
+    const { progress, newlyUnlocked } = unlockLevelAchievements(level);
+    setAchievementProgress(progress);
+    if (newlyUnlocked.length === 0) {
+      return;
+    }
+    const latest = newlyUnlocked[newlyUnlocked.length - 1];
+    if (!latest) {
+      return;
+    }
+    setToast(latest);
+    setMuseCelebrate(true);
+    if (toastTimerRef.current !== null) {
+      window.clearTimeout(toastTimerRef.current);
+    }
+    toastTimerRef.current = window.setTimeout(() => {
+      setToast(null);
+      setMuseCelebrate(false);
+      toastTimerRef.current = null;
+    }, 3200);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current !== null) {
+        window.clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
+
   const handleEvents = useCallback(
     (events: readonly GameEvent[], state: GameState) => {
       const audio = audioRef.current;
@@ -209,6 +254,7 @@ export function App() {
           }
           case "levelUp":
             audio?.play("levelUp");
+            applyLevelAchievements(event.level ?? state.level);
             setLevelFlash(true);
             window.setTimeout(
               () => setLevelFlash(false),
@@ -219,6 +265,7 @@ export function App() {
             audio?.stopMusic();
             audio?.play("gameOver");
             saveHighScore(state.score);
+            applyLevelAchievements(state.level);
             break;
           case "pause":
             audio?.pauseMusic();
@@ -236,7 +283,7 @@ export function App() {
         }
       }
     },
-    [],
+    [applyLevelAchievements],
   );
 
   const commitState = useCallback(
@@ -263,9 +310,10 @@ export function App() {
     particlesRef.current = [];
     trailRef.current = null;
     setScreen("playing");
+    applyLevelAchievements(1);
     audioRef.current?.startMusic();
     commitState(state);
-  }, [commitState, ensureAudio]);
+  }, [applyLevelAchievements, commitState, ensureAudio]);
 
   const returnToMenu = useCallback(() => {
     audioRef.current?.stopMusic();
@@ -412,6 +460,8 @@ export function App() {
           <StartScreen
             highScore={ui.highScore}
             onStart={() => void startGame()}
+            onOpenAchievements={() => setShowAchievements(true)}
+            highestLevel={achievementProgress.highestLevel}
           />
         ) : (
           <main
@@ -419,6 +469,24 @@ export function App() {
           >
             <div className={styles.holdSlot}>
               <HoldPiece hold={ui.hold} canHold={ui.canHold} />
+              <div className={styles.museSlot}>
+                <StageMuse
+                  compact
+                  level={Math.max(
+                    ui.level,
+                    achievementProgress.highestLevel,
+                    1,
+                  )}
+                  celebrate={museCelebrate}
+                />
+                <button
+                  type="button"
+                  className={styles.achievementsLink}
+                  onClick={() => setShowAchievements(true)}
+                >
+                  Achievements
+                </button>
+              </div>
             </div>
 
             <div className={styles.stage}>
@@ -466,6 +534,14 @@ export function App() {
           </main>
         )}
       </div>
+
+      {showAchievements ? (
+        <AchievementsPanel
+          progress={achievementProgress}
+          onClose={() => setShowAchievements(false)}
+        />
+      ) : null}
+      {toast ? <AchievementToast achievement={toast} /> : null}
     </>
   );
 }
