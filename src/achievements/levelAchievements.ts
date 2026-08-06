@@ -6,11 +6,13 @@ export interface LevelAchievement {
   readonly title: string;
   readonly description: string;
   readonly outfitLabel: string;
+  /** High-resolution portrait under /muse/ */
+  readonly imageSrc: string;
 }
 
 /**
  * One achievement per level. Reaching the level unlocks the reward and
- * advances Miss Melody's stage wardrobe (Marilyn-inspired glam, fictional).
+ * advances Miss Melody's hi-res stage wardrobe.
  */
 export const LEVEL_ACHIEVEMENTS: readonly LevelAchievement[] = [
   {
@@ -18,14 +20,16 @@ export const LEVEL_ACHIEVEMENTS: readonly LevelAchievement[] = [
     id: "level-1",
     title: "First Ivory",
     description: "Open the recital at level 1.",
-    outfitLabel: "White evening gown & fur",
+    outfitLabel: "Ivory gown & fur",
+    imageSrc: "/muse/stage-01.png",
   },
   {
     level: 2,
     id: "level-2",
     title: "Warm Spotlight",
     description: "Reach level 2 — the stole comes off.",
-    outfitLabel: "Evening gown",
+    outfitLabel: "Ivory evening gown",
+    imageSrc: "/muse/stage-02.png",
   },
   {
     level: 3,
@@ -33,55 +37,63 @@ export const LEVEL_ACHIEVEMENTS: readonly LevelAchievement[] = [
     title: "Satin Hands",
     description: "Reach level 3 — gloves slip away.",
     outfitLabel: "Gown, bare hands",
+    imageSrc: "/muse/stage-03.png",
   },
   {
     level: 4,
     id: "level-4",
     title: "Cocktail Hour",
-    description: "Reach level 4 — gown becomes a cocktail dress.",
-    outfitLabel: "Cocktail dress",
+    description: "Reach level 4 — the gown becomes a cocktail dress.",
+    outfitLabel: "Cream cocktail dress",
+    imageSrc: "/muse/stage-04.png",
   },
   {
     level: 5,
     id: "level-5",
     title: "Strapless Glow",
     description: "Reach level 5 — shoulders bare under the lights.",
-    outfitLabel: "Strapless dress",
+    outfitLabel: "Strapless satin dress",
+    imageSrc: "/muse/stage-05.png",
   },
   {
     level: 6,
     id: "level-6",
     title: "Silk Slip",
     description: "Reach level 6 — dress gives way to a silk slip.",
-    outfitLabel: "Silk slip",
+    outfitLabel: "Blush silk slip",
+    imageSrc: "/muse/stage-06.png",
   },
   {
     level: 7,
     id: "level-7",
-    title: "Corset Cadence",
-    description: "Reach level 7 — corset and stockings only.",
-    outfitLabel: "Corset & stockings",
+    title: "Robe Interlude",
+    description: "Reach level 7 — silk robe between sets.",
+    outfitLabel: "Ivory silk robe",
+    imageSrc: "/muse/stage-07.png",
   },
   {
     level: 8,
     id: "level-8",
-    title: "Lingerie Motif",
-    description: "Reach level 8 — lingerie under the amber glow.",
-    outfitLabel: "Lingerie",
+    title: "Sequin Motif",
+    description: "Reach level 8 — champagne sequins catch the light.",
+    outfitLabel: "Champagne sequin dress",
+    imageSrc: "/muse/stage-08.png",
   },
   {
     level: 9,
     id: "level-9",
-    title: "Stage Bikini",
-    description: "Reach level 9 — swimsuit sparkle on the boards.",
-    outfitLabel: "Stage bikini",
+    title: "Closer Spotlight",
+    description: "Reach level 9 — the spotlight pulls in tight.",
+    outfitLabel: "Spotlight encore dress",
+    imageSrc: "/muse/stage-09.png",
   },
   {
     level: 10,
     id: "level-10",
-    title: "Fair Spotlight",
-    description: "Reach level 10 — fair skin under the final spotlight.",
-    outfitLabel: "Fair pin-up",
+    title: "Final Fair",
+    description: "Reach level 10 — cashmere wrap for the final bow.",
+    outfitLabel: "Fair wrap encore",
+    imageSrc: "/muse/stage-10.png",
   },
 ] as const;
 
@@ -97,4 +109,10 @@ export function achievementForLevel(
 /** Outfit stage index 1..MAX_MUSE_LEVEL from highest unlocked level. */
 export function outfitStageForLevel(level: number): number {
   return Math.min(Math.max(1, Math.floor(level)), MAX_MUSE_LEVEL);
+}
+
+export function museImageForLevel(level: number): string {
+  return (
+    achievementForLevel(level)?.imageSrc ?? LEVEL_ACHIEVEMENTS[0]!.imageSrc
+  );
 }

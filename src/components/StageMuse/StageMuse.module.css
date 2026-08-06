@@ -4,39 +4,63 @@
   flex-direction: column;
   align-items: center;
   gap: 0.45rem;
+  width: 100%;
 }
 
 .frame {
+  position: relative;
   width: 100%;
-  aspect-ratio: 160 / 280;
-  max-height: 18rem;
+  aspect-ratio: 2 / 3;
+  max-height: 22rem;
   border-radius: 2px;
-  border: 1px solid rgba(212, 168, 75, 0.35);
-  background:
-    radial-gradient(
-      ellipse at 50% 20%,
-      rgba(255, 220, 140, 0.16),
-      transparent 55%
-    ),
-    linear-gradient(180deg, rgba(28, 22, 18, 0.95), rgba(8, 6, 5, 0.98));
+  border: 1px solid rgba(212, 168, 75, 0.4);
+  background: #0a0806;
   box-shadow:
     var(--pb-shadow-soft),
+    0 0 28px rgba(212, 168, 75, 0.12),
     inset 0 0 0 1px rgba(255, 255, 255, 0.04);
   overflow: hidden;
 }
 
 .compact .frame {
-  max-height: 14rem;
+  max-height: 16rem;
 }
 
-.svg {
+.large .frame {
+  max-height: min(70vh, 36rem);
+  max-width: min(100%, 24rem);
+  margin: 0 auto;
+}
+
+.photo {
   display: block;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  image-rendering: auto;
+  -webkit-user-drag: none;
+  user-select: none;
+  transition:
+    transform calc(0.55s * var(--pb-motion, 1)) ease,
+    filter calc(0.45s * var(--pb-motion, 1)) ease;
 }
 
-.layer {
-  transition: opacity calc(0.45s * var(--pb-motion, 1)) ease;
+.celebrate .photo {
+  animation: museZoom calc(1.2s * var(--pb-motion, 1)) ease;
+}
+
+.vignette {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.45) 100%),
+    radial-gradient(
+      ellipse at 50% 30%,
+      transparent 40%,
+      rgba(0, 0, 0, 0.28) 100%
+    );
 }
 
 .caption {
@@ -76,18 +100,35 @@
   100% {
     box-shadow:
       var(--pb-shadow-soft),
+      0 0 28px rgba(212, 168, 75, 0.12),
       inset 0 0 0 1px rgba(255, 255, 255, 0.04);
   }
   40% {
     box-shadow:
-      0 0 28px rgba(212, 168, 75, 0.45),
-      inset 0 0 0 1px rgba(255, 236, 180, 0.2);
+      0 0 36px rgba(212, 168, 75, 0.5),
+      inset 0 0 0 1px rgba(255, 236, 180, 0.25);
+  }
+}
+
+@keyframes museZoom {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  40% {
+    transform: scale(1.04);
+    filter: brightness(1.08);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .celebrate .frame,
-  .layer {
+  .celebrate .photo,
+  .photo {
     animation: none;
     transition: none;
   }

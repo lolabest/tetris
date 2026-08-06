@@ -47,7 +47,7 @@ export function AchievementsPanel({
         </header>
 
         <div className={styles.body}>
-          <StageMuse level={displayLevel} />
+          <StageMuse level={displayLevel} large />
 
           <ul className={styles.list}>
             {LEVEL_ACHIEVEMENTS.map((achievement) => (
