@@ -610,20 +610,29 @@ export class GameEngine {
   /** Cheat: jump to a level (adjusts lines + drop speed). */
   cheatSetLevel(level: number): GameState {
     const { engine } = this;
-    if (engine.state.phase !== "playing" && engine.state.phase !== "paused") {
+    if (engine.state.phase === "idle") {
       return withEvents(engine.state, []);
     }
     const nextLevel = Math.max(1, Math.min(99, Math.floor(level)));
     const previousLevel = engine.state.level;
     const lines = (nextLevel - 1) * engine.config.linesPerLevel;
     const events: GameEvent[] = [];
-    if (nextLevel > previousLevel) {
+    if (nextLevel !== previousLevel) {
       events.push({ type: "levelUp", level: nextLevel });
     }
+    // Cancel clear / revive from game over so cheats always apply immediately
+    const phase =
+      engine.state.phase === "clearing" || engine.state.phase === "gameover"
+        ? "playing"
+        : engine.state.phase;
+    engine.dropAccumulatorMs = 0;
+    engine.lockTimerMs = 0;
     engine.state = updateGhost(
       withEvents(
         {
           ...engine.state,
+          phase,
+          clearing: null,
           level: nextLevel,
           lines,
           dropIntervalMs: dropIntervalForLevel(nextLevel, engine.config),
@@ -644,7 +653,7 @@ export class GameEngine {
   /** Cheat: wipe locked cells; keep the active piece if it still fits. */
   cheatClearBoard(): GameState {
     const { engine } = this;
-    if (engine.state.phase !== "playing" && engine.state.phase !== "paused") {
+    if (engine.state.phase === "idle") {
       return withEvents(engine.state, []);
     }
     const board = createEmptyBoard(
@@ -655,12 +664,17 @@ export class GameEngine {
     if (active && !canPlace(board, active)) {
       active = null;
     }
+    const phase =
+      engine.state.phase === "clearing" || engine.state.phase === "gameover"
+        ? "playing"
+        : engine.state.phase;
     engine.dropAccumulatorMs = 0;
     engine.lockTimerMs = 0;
     engine.state = updateGhost(
       withEvents(
         {
           ...engine.state,
+          phase,
           board,
           active,
           clearing: null,

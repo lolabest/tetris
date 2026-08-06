@@ -53,7 +53,6 @@ export function CheatsPanel({
             <button
               type="button"
               className={styles.btn}
-              disabled={!playing}
               onClick={() => onCheat({ type: "levelUp" })}
             >
               Level up (+1)
@@ -75,6 +74,12 @@ export function CheatsPanel({
               +10,000 score
             </button>
           </div>
+          {!playing ? (
+            <p className={styles.hint}>
+              Start a game to change the live level/board. Wardrobe unlocks
+              still work from here.
+            </p>
+          ) : null}
           <div className={styles.levels}>
             {Array.from({ length: MAX_MUSE_LEVEL }, (_, i) => i + 1).map(
               (level) => (
@@ -82,7 +87,6 @@ export function CheatsPanel({
                   key={level}
                   type="button"
                   className={`${styles.levelBtn} ${currentLevel === level ? styles.active : ""}`}
-                  disabled={!playing}
                   onClick={() => onCheat({ type: "setLevel", level })}
                 >
                   Lv {level}

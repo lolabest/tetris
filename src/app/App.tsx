@@ -334,17 +334,32 @@ export function App() {
     (action: CheatAction) => {
       const engine = engineRef.current;
       void ensureAudio();
-      audioRef.current?.play("ui");
+      try {
+        audioRef.current?.play("ui");
+      } catch {
+        // ignore audio failures during cheats
+      }
+
+      const applyLevelCheat = (level: number): void => {
+        if (!engine || screen !== "playing") {
+          // Still unlock wardrobe progress from the menu
+          applyLevelAchievements(level);
+          return;
+        }
+        const state = engine.cheatSetLevel(level);
+        // Apply achievements directly — don't rely only on event fan-out
+        applyLevelAchievements(level);
+        commitState(state);
+      };
 
       switch (action.type) {
         case "levelUp": {
-          if (!engine || screen !== "playing") return;
-          commitState(engine.cheatLevelUp());
+          const next = Math.min(99, (engine?.getState().level ?? ui.level) + 1);
+          applyLevelCheat(next);
           break;
         }
         case "setLevel": {
-          if (!engine || screen !== "playing") return;
-          commitState(engine.cheatSetLevel(action.level));
+          applyLevelCheat(action.level);
           break;
         }
         case "clearBoard": {
@@ -374,7 +389,7 @@ export function App() {
           break;
       }
     },
-    [applyLevelAchievements, commitState, ensureAudio, screen],
+    [applyLevelAchievements, commitState, ensureAudio, screen, ui.level],
   );
 
   const startGame = useCallback(async () => {
@@ -553,11 +568,7 @@ export function App() {
               <div className={styles.museSlot}>
                 <StageMuse
                   compact
-                  level={Math.max(
-                    ui.level,
-                    achievementProgress.highestLevel,
-                    1,
-                  )}
+                  level={Math.max(1, Math.min(MAX_MUSE_LEVEL, ui.level))}
                   celebrate={museCelebrate}
                 />
                 <button
@@ -580,7 +591,6 @@ export function App() {
                     type="button"
                     className={styles.quickCheat}
                     onClick={() => runCheat({ type: "levelUp" })}
-                    disabled={ui.phase === "gameover"}
                   >
                     Lv+
                   </button>
@@ -590,10 +600,9 @@ export function App() {
                     onClick={() =>
                       runCheat({
                         type: "setLevel",
-                        level: Math.min(10, ui.level + 1),
+                        level: (ui.level % MAX_MUSE_LEVEL) + 1,
                       })
                     }
-                    disabled={ui.phase === "gameover"}
                   >
                     Next look
                   </button>
@@ -601,7 +610,6 @@ export function App() {
                     type="button"
                     className={styles.quickCheat}
                     onClick={() => runCheat({ type: "clearBoard" })}
-                    disabled={ui.phase === "gameover"}
                   >
                     Clear
                   </button>

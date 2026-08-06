@@ -22,7 +22,7 @@ import {
   lineClearScore,
   softDropScore,
 } from "../game/scoring";
-import type { ActivePiece, TetrominoType } from "../game/types";
+import type { ActivePiece, GameState, TetrominoType } from "../game/types";
 import { getHighScore, saveHighScore } from "../storage/highScoreStorage";
 import {
   defaultSettings,
@@ -406,5 +406,23 @@ describe("localStorage adapters", () => {
       cleared.board.every((row) => row.every((cell) => cell === null)),
     ).toBe(true);
     expect(cleared.active).not.toBeNull();
+
+    // Cheats must still apply while a clear animation is pending
+    engine.cheatSetLevel(2);
+    const beforeClearCheat = engine.getState().level;
+    Object.assign(
+      (engine as unknown as { engine: { state: GameState } }).engine,
+      {
+        state: {
+          ...engine.getState(),
+          phase: "clearing",
+          clearing: { rows: [21], startedAt: 0, durationMs: 500 },
+        },
+      },
+    );
+    const duringClear = engine.cheatLevelUp();
+    expect(duringClear.phase).toBe("playing");
+    expect(duringClear.level).toBe(beforeClearCheat + 1);
+    expect(duringClear.clearing).toBeNull();
   });
 });
