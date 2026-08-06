@@ -567,6 +567,52 @@ export function App() {
                 >
                   Achievements
                 </button>
+                <button
+                  type="button"
+                  className={styles.cheatsLink}
+                  onClick={() => setShowCheats(true)}
+                  data-testid="in-game-cheats"
+                >
+                  Cheats
+                </button>
+                <div className={styles.quickCheats} aria-label="Quick cheats">
+                  <button
+                    type="button"
+                    className={styles.quickCheat}
+                    onClick={() => runCheat({ type: "levelUp" })}
+                    disabled={ui.phase === "gameover"}
+                  >
+                    Lv+
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.quickCheat}
+                    onClick={() =>
+                      runCheat({
+                        type: "setLevel",
+                        level: Math.min(10, ui.level + 1),
+                      })
+                    }
+                    disabled={ui.phase === "gameover"}
+                  >
+                    Next look
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.quickCheat}
+                    onClick={() => runCheat({ type: "clearBoard" })}
+                    disabled={ui.phase === "gameover"}
+                  >
+                    Clear
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.quickCheat}
+                    onClick={() => runCheat({ type: "unlockAll" })}
+                  >
+                    All
+                  </button>
+                </div>
               </div>
             </div>
 
