@@ -1,0 +1,67 @@
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.4rem;
+  z-index: 50;
+  transform: translateX(-50%);
+  min-width: min(90vw, 18rem);
+  padding: 0.85rem 1.1rem;
+  text-align: center;
+  background: linear-gradient(
+    180deg,
+    rgba(36, 28, 18, 0.95),
+    rgba(12, 8, 5, 0.96)
+  );
+  border: 1px solid rgba(212, 168, 75, 0.5);
+  border-radius: 4px;
+  box-shadow:
+    0 0 28px rgba(212, 168, 75, 0.28),
+    var(--pb-shadow);
+  animation:
+    rise calc(0.35s * var(--pb-motion, 1)) ease both,
+    fadeOut calc(0.4s * var(--pb-motion, 1)) ease 2.6s both;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pb-gold-soft);
+}
+
+.title {
+  margin: 0.25rem 0 0.15rem;
+  font-family: var(--pb-font-display);
+  font-size: 1.25rem;
+  color: var(--pb-cream);
+}
+
+.detail {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--pb-ivory-dim);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}

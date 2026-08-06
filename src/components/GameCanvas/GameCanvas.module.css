@@ -1,0 +1,30 @@
+.frame {
+  position: relative;
+  width: min(40vh, 100%);
+  /* Board + piano skirt */
+  aspect-ratio: 10 / 22;
+  max-height: min(76vh, 680px);
+  margin: 0 auto;
+  border-radius: 3px;
+  border: 2px solid rgba(212, 168, 75, 0.35);
+  box-shadow:
+    var(--pb-shadow),
+    0 0 0 1px rgba(0, 0, 0, 0.8),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 0 40px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  background: linear-gradient(180deg, #1a1612 0%, #0a0908 100%);
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 720px) {
+  .frame {
+    width: min(54vw, 300px);
+    max-height: 58vh;
+  }
+}

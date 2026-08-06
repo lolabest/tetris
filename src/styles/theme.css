@@ -1,0 +1,49 @@
+:root {
+  /* Premium night music stage — black lacquer, ivory, warm gold/copper */
+  --pb-bg-deep: #050505;
+  --pb-bg: #0c0c0e;
+  --pb-bg-elevated: #141416;
+  --pb-bg-panel: rgba(18, 16, 14, 0.78);
+  --pb-border: #3a3228;
+  --pb-border-soft: #2a241c;
+  --pb-ivory: #f3ead8;
+  --pb-ivory-dim: #d4cbb8;
+  --pb-cream: #f7f0e4;
+  --pb-charcoal: #121110;
+  --pb-black-key: #0a0806;
+  --pb-gold: #d4a84b;
+  --pb-gold-soft: #b8893a;
+  --pb-copper: #b87333;
+  --pb-gold-glow: rgba(212, 168, 75, 0.45);
+  --pb-muted: #8a8070;
+  --pb-danger: #b85c4a;
+  --pb-success: #7a9a6d;
+  --pb-focus: #e6c36a;
+  --pb-smoke: rgba(190, 180, 160, 0.12);
+  --pb-lamp: rgba(210, 140, 50, 0.35);
+
+  --pb-font-display: "Cormorant Garamond", "Palatino Linotype", Palatino, serif;
+  --pb-font-body: "Source Sans 3", "Segoe UI", sans-serif;
+
+  --pb-radius: 4px;
+  --pb-shadow: 0 16px 48px rgba(0, 0, 0, 0.65);
+  --pb-shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.45);
+
+  --pb-piece-ivory: #e8dcc4;
+  --pb-piece-gold: #d4af37;
+  --pb-piece-pearl: #d9cfc0;
+  --pb-piece-sage: #8fa382;
+  --pb-piece-rosewood: #9a6b5a;
+  --pb-piece-slate: #7a8494;
+  --pb-piece-amber: #c4924a;
+
+  --pb-ghost-alpha: 0.28;
+  --pb-cell-gap: 1.5px;
+  --pb-motion: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --pb-motion: 0;
+  }
+}

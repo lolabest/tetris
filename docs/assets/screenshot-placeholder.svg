@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" fill="none">
+  <rect width="960" height="540" fill="#0c0b0a"/>
+  <rect x="40" y="40" width="880" height="460" rx="16" stroke="#c9a227" stroke-opacity="0.45"/>
+  <text x="480" y="240" text-anchor="middle" fill="#f3ead8" font-family="Georgia, serif" font-size="48">Piano Blocks</text>
+  <text x="480" y="290" text-anchor="middle" fill="#8a8070" font-family="Georgia, serif" font-size="20">Screenshot placeholder  replace with a real capture</text>
+  <rect x="300" y="340" width="360" height="80" rx="8" fill="#1c1a17" stroke="#3a342c"/>
+  <rect x="320" y="355" width="24" height="50" fill="#f3ead8"/>
+  <rect x="350" y="355" width="24" height="50" fill="#f3ead8"/>
+  <rect x="380" y="355" width="24" height="50" fill="#f3ead8"/>
+  <rect x="410" y="355" width="24" height="50" fill="#f3ead8"/>
+  <rect x="440" y="355" width="24" height="50" fill="#f3ead8"/>
+  <rect x="470" y="355" width="24" height="50" fill="#f3ead8"/>
+  <rect x="500" y="355" width="24" height="50" fill="#f3ead8"/>
+  <rect x="530" y="355" width="24" height="50" fill="#f3ead8"/>
+  <rect x="560" y="355" width="24" height="50" fill="#f3ead8"/>
+  <rect x="590" y="355" width="24" height="50" fill="#f3ead8"/>
+  <rect x="338" y="355" width="14" height="30" fill="#0a0908"/>
+  <rect x="368" y="355" width="14" height="30" fill="#0a0908"/>
+  <rect x="428" y="355" width="14" height="30" fill="#0a0908"/>
+  <rect x="458" y="355" width="14" height="30" fill="#0a0908"/>
+  <rect x="488" y="355" width="14" height="30" fill="#0a0908"/>
+  <rect x="548" y="355" width="14" height="30" fill="#0a0908"/>
+  <rect x="578" y="355" width="14" height="30" fill="#0a0908"/>
+</svg>
